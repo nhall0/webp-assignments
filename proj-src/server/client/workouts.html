@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FitnessHero</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .content {
+      flex: 1;
+    }
+
+    .footer {
+      margin-top: auto;
+      height: 60px; /* Change the height value as needed */
+      background-color: #f0f0f0; /* Change the background color as needed */
+      color: #333; /* Change the text color as needed */
+      padding: 15px; /* Adjust the padding as needed */
+    }
+
+    .column {
+      background-color: #00d1b2; /* Primary color */
+      color: white;
+      padding: 20px;
+      border-radius: 5px;
+      margin: 0.5rem; /* Adjust as needed */
+      height: 800px
+    }
+
+    .is-secondary {
+        background-color: #24ecce;
+        color: white;
+    }
+    
+    .centered-middle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .large-text {
+      font-family: 'Roboto', sans-serif; /* Modern font family */
+      font-size: 3rem; /* Adjust the font size as needed */
+      font-weight: bold;
+    }
+
+    .medium-text {
+      font-family: 'Roboto', sans-serif; /* Modern font family */
+      font-size: 1rem; /* Adjust the font size as needed */
+      font-weight: bold;
+    }
+
+    .column-bordered {
+        border-top: 60px solid #24ecce; /* Border style */
+    }
+  </style>
+
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar is-primary role='navigation'" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item">
+        FitnessHero
+      </a>
+
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="#">
+          Home
+        </a>
+
+        <a class="navbar-item" href="#">
+          Workouts
+        </a>
+
+        <a class="navbar-item" href="#">
+          Goals
+        </a>
+      </div>
+
+      <div class="navbar-end">
+        <div class="navbar-item">
+            <div class="dropdown is-hoverable">
+                <div class="dropdown-trigger">
+                    <button class="is-secondary button is-primary" aria-haspopup="true" aria-controls="dropdown-menu4">
+                    <span>Niklas Hallstein</span>
+                    <span class="icon is-small">
+                        <i class="fas fa-user-circle" aria-hidden="true"></i>
+                    </span>
+                    </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+                    <div class="dropdown-content">
+                        <a href="#" class="dropdown-item">
+                        Settings
+                        </a>
+                        <a href="#" class="dropdown-item">
+                        Your Profile
+                        </a>
+                        <a href="#" class="dropdown-item">
+                        Friends
+                        </a>
+                        <a href="#" class="dropdown-item">
+                        Sign Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content Section -->
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+
+        <!-- Workouts -->
+        <div class="column column-bordered is-one-quarter is-primary">
+ 
+        </div>
+
+        <div class="column is-secondary">
+            <h2 class="content centered-middle has-text-centered large-text">Select a workout to get started.</h2>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer ">
+    <div class="content has-text-centered">
+      <p>
+        &copy; 2023 FitnessHero. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
