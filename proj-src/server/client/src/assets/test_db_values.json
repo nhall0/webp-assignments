@@ -1,0 +1,20 @@
+{
+    "users":{
+        "user":{
+            "username":"user",
+            "password":"user",
+            "email":"email@gmail.com",
+            "firstName":"User",
+            "lastName":"User",
+            "role":"user"
+        },
+        "admin":{
+            "username":"admin",
+            "password":"admin",
+            "email":"admin@gmail.com",
+            "firstName":"Admin",
+            "lastName":"Admin",
+            "role":"admin"
+        }
+    }
+}
