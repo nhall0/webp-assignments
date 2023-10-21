@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
-import userData from '@/data/test_db_values.json';
+import { getUsers } from '@/model/users';
 
 const state = reactive({
-  users: userData.users
+  users: getUsers()
 });
 
 const userCount = state.users ? Object.keys(state.users).length : 0;

@@ -1,0 +1,128 @@
+[
+    {
+        "name": "Bench Press",
+        "description": "Upper body exercise targeting the chest, arms, and shoulders with a barbell.",
+        "muscleGroup": "Chest",
+        "equipment": "Barbell"
+    },
+    {
+        "name": "Squat",
+        "description": "Full body exercise using a barbell to strengthen the legs and buttocks.",
+        "muscleGroup": "Legs",
+        "equipment": "Barbell"
+    },
+    {
+        "name": "Deadlift",
+        "description": "Weight lifting exercise with a barbell focusing on the hips and lower back.",
+        "muscleGroup": "Legs",
+        "equipment": "Barbell"
+    },
+    {
+        "name": "Push-Up",
+        "description": "Bodyweight exercise for chest, shoulders, and triceps.",
+        "muscleGroup": "Chest",
+        "equipment": "None"
+    },
+    {
+        "name": "Pull-Up",
+        "description": "Bodyweight exercise for back and biceps using a pull-up bar.",
+        "muscleGroup": "Back",
+        "equipment": "Pull-Up Bar"
+    },
+    {
+        "name": "Plank",
+        "description": "Core-strengthening exercise holding a push-up position on your elbows.",
+        "muscleGroup": "Core",
+        "equipment": "None"
+    },
+    {
+        "name": "Lunges",
+        "description": "Leg exercise involving stepping forward and bending both knees.",
+        "muscleGroup": "Legs",
+        "equipment": "None"
+    },
+    {
+        "name": "Dumbbell Curl",
+        "description": "Isolation exercise for biceps using dumbbells.",
+        "muscleGroup": "Arms",
+        "equipment": "Dumbbells"
+    },
+    {
+        "name": "Russian Twists",
+        "description": "Core exercise involving twisting the torso with a weight or ball.",
+        "muscleGroup": "Core",
+        "equipment": "Medicine Ball"
+    },
+    {
+        "name": "Tricep Dips",
+        "description": "Exercise to target the triceps using parallel bars or a bench.",
+        "muscleGroup": "Arms",
+        "equipment": "Parallel Bars or Bench"
+    },
+    {
+        "name": "Calf Raises",
+        "description": "Exercise for the calf muscles using weights or a machine.",
+        "muscleGroup": "Legs",
+        "equipment": "Weights or Machine"
+    },
+    {
+        "name": "Leg Press",
+        "description": "Leg exercise using a leg press machine.",
+        "muscleGroup": "Legs",
+        "equipment": "Leg Press Machine"
+    },
+    {
+        "name": "Shoulder Press",
+        "description": "Shoulder exercise with a barbell or dumbbells.",
+        "muscleGroup": "Shoulders",
+        "equipment": "Barbell or Dumbbells"
+    },
+    {
+        "name": "Hammer Curls",
+        "description": "Biceps exercise with a hammer grip using dumbbells.",
+        "muscleGroup": "Arms",
+        "equipment": "Dumbbells"
+    },
+    {
+        "name": "Mountain Climbers",
+        "description": "Cardio and core exercise performed in a plank position.",
+        "muscleGroup": "Core",
+        "equipment": "None"
+    },
+    {
+        "name": "Bent-Over Rows",
+        "description": "Back exercise with a barbell or dumbbells.",
+        "muscleGroup": "Back",
+        "equipment": "Barbell or Dumbbells"
+    },
+    {
+        "name": "Bicep Curls",
+        "description": "Isolation exercise for biceps with dumbbells.",
+        "muscleGroup": "Arms",
+        "equipment": "Dumbbells"
+    },
+    {
+        "name": "Sit-Ups",
+        "description": "Core exercise to strengthen abdominal muscles.",
+        "muscleGroup": "Core",
+        "equipment": "None"
+    },
+    {
+        "name": "Leg Curls",
+        "description": "Hamstring exercise using a leg curl machine.",
+        "muscleGroup": "Legs",
+        "equipment": "Leg Curl Machine"
+    },
+    {
+        "name": "Chin-Ups",
+        "description": "Back and biceps exercise with an underhand grip on a pull-up bar.",
+        "muscleGroup": "Back",
+        "equipment": "Pull-Up Bar"
+    },
+    {
+        "name": "Plank Rotations",
+        "description": "Core exercise involving twisting in a plank position with a weight or ball.",
+        "muscleGroup": "Core",
+        "equipment": "Weight or Medicine Ball"
+    }
+]

@@ -38,7 +38,7 @@ const logout = () => {
                       <a href="#" class="dropdown-item" @click.prevent="logout">
                       Sign Out
                       </a>
-                      <RouterLink to="/admin" href="#" class="dropdown-item" v-if="session.user.role === 'admin'">
+                      <RouterLink to="/admin" href="#" class="dropdown-item" v-if="session.user.role === 1">
                       Admin Panel
                       </RouterLink>
                   </div>

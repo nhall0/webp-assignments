@@ -1,0 +1,8 @@
+{
+    "16c7aa58-7041-11ee-b962-0242ac120002":{
+        "name":"My Goal",
+        "owner":"e54265d9-a016-4283-8cc1-c6c75de2d451",
+        "repetition":"0 15 * * 1,4",
+        "privacy":2
+    }
+}

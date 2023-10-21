@@ -1,0 +1,26 @@
+{
+    "3ad8b270-7041-11ee-b962-0242ac120002":{
+        "owner":"e54265d9-a016-4283-8cc1-c6c75de2d451",
+        "name":"Workout Day!",
+        "workout":"a750fd6e-18b1-411a-80db-af03fafa68be",
+        "date":"1/10/2023"
+    },
+    "830a6840-7041-11ee-b962-0242ac120002":{
+        "owner":"e54265d9-a016-4283-8cc1-c6c75de2d451",
+        "name":"Workout Day 2!",
+        "workout":"a750fd6e-18b1-411a-80db-af03fafa68be",
+        "date":"2/10/2023"
+    },
+    "8e913b30-7041-11ee-b962-0242ac120002":{
+        "owner":"e54265d9-a016-4283-8cc1-c6c75de2d453",
+        "name":"Test workout day.",
+        "workout":"ebbc14e1-0060-4acc-9ab8-6c6647c0653c",
+        "date":"13/10/2023"
+    },
+    "9107410c-7041-11ee-b962-0242ac120002":{
+        "owner":"e54265d9-a016-4283-8cc1-c6c75de2d453",
+        "name":"Admin workout day.",
+        "workout":"ebbc14e1-0060-4acc-9ab8-6c6647c0653c",
+        "date":"6/10/2023"
+    }
+}
