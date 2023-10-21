@@ -1,7 +1,6 @@
 <script lang="ts">
   import { ref } from 'vue';  
   import { login } from '../model/session'
-  import { useRouter } from 'vue-router';
 
   export default {
     setup(){
@@ -119,7 +118,7 @@
      
     .title-text {
       font-family: 'Roboto', sans-serif; /* Modern font family */
-      font-size: 5rem; /* Adjust the font size as needed */
+      font-size: 4rem; /* Adjust the font size as needed */
       font-weight: bold;
       margin-bottom: 50px;
     }

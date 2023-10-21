@@ -2,33 +2,21 @@
     <div class="home-page">
       <section class="section">
         <div class="container">
-          <h1 class="title">Welcome to FitnessHero</h1>
+          <h1 class="title">FitnessHero</h1>
           
           <!-- Featured Workouts Section -->
           <div class="box">
-            <h2 class="subtitle">Featured Workouts</h2>
-            <ul>
-              <li>Workout 1</li>
-              <li>Workout 2</li>
-              <!-- Add more featured workouts as needed -->
-            </ul>
+            <h2 class="subtitle">Recent Posts</h2>
           </div>
   
           <!-- Latest Updates Section -->
           <div class="box">
-            <h2 class="subtitle">Latest Updates</h2>
-            <ul>
-              <li>Update 1</li>
-              <li>Update 2</li>
-              <!-- Add more latest updates as needed -->
-            </ul>
+            <h2 class="subtitle">Quick Workout</h2>
           </div>
   
           <!-- Call to Action -->
-          <div class="box cta-box">
-            <h2 class="subtitle">Start your fitness journey now!</h2>
-            <p>Join FitnessHero to access personalized workouts and track your progress.</p>
-            <a href="/signup" class="button is-primary">Get Started</a>
+          <div class="box">
+            <h2 class="subtitle">Progress at a glance</h2>
           </div>
   
         </div>

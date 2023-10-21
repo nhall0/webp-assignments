@@ -2,7 +2,6 @@
 import { RouterView } from 'vue-router'
 import NavBar from './components/Nav.vue';
 import Footer from './components/Footer.vue';
-
 import { getSession } from './model/session';
 
 const session = getSession();

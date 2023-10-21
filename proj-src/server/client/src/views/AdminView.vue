@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
-import userData from '@/assets/test_db_values.json';
+import userData from '@/data/test_db_values.json';
 
 const state = reactive({
   users: userData.users
