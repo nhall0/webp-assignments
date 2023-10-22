@@ -20,7 +20,7 @@ const notificationSettings = ref({
     <section class="section">
       <div class="container">
         <h1 class="title has-text-success">Settings</h1>
-        
+
         <div class="box settings-box">
           <h2 class="subtitle">Profile Settings</h2>
           <form>

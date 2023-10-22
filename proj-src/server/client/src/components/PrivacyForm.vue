@@ -27,12 +27,14 @@ export default defineComponent({
 <style scoped>
 .has-text-centered {
   text-align: center;
-  padding: 20px; 
+  padding: 20px;
 }
 
 .button.is-active {
-  background-color: #3273dc; /* Nicer background color, e.g., a shade of blue */
-  color: #fff; /* Nicer text color, e.g., white */
+  background-color: #3273dc;
+  /* Nicer background color, e.g., a shade of blue */
+  color: #fff;
+  /* Nicer text color, e.g., white */
 }
 
 .is-rounded {

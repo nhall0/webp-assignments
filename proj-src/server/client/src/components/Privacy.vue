@@ -31,9 +31,12 @@ export default defineComponent({
 
 <template>
   <div>
-    <button @click="setPrivacy(2)" :class="{ 'is-active': privacy === 2 }" class="button is-danger" v-if="showPrivateButton">Private</button>
-    <button @click="setPrivacy(1)" :class="{ 'is-active': privacy === 1 }" class="button is-warning" v-if="showFriendsOnlyButton">Friends Only</button>
-    <button @click="setPrivacy(0)" :class="{ 'is-active': privacy === 0 }" class="button is-primary" v-if="showPublicButton">Public</button>
+    <button @click="setPrivacy(2)" :class="{ 'is-active': privacy === 2 }" class="button is-danger"
+      v-if="showPrivateButton">Private</button>
+    <button @click="setPrivacy(1)" :class="{ 'is-active': privacy === 1 }" class="button is-warning"
+      v-if="showFriendsOnlyButton">Friends Only</button>
+    <button @click="setPrivacy(0)" :class="{ 'is-active': privacy === 0 }" class="button is-primary"
+      v-if="showPublicButton">Public</button>
   </div>
 </template>
   
@@ -41,5 +44,4 @@ export default defineComponent({
 .button.is-active {
   background-color: green;
   color: white;
-}
-</style>
+}</style>

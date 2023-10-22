@@ -1,60 +1,60 @@
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
-  import {type Workout} from '@/model/workouts';
-  import {type Exercise, getExerciseIndexByName} from '@/model/exercises';
-  import PrivacyForm from './PrivacyForm.vue';
-  import ExerciseList from './ExerciseList.vue';
-  
-  export default defineComponent({
-    data() {
-      return {
-        showModal: ref(false),
-        newWorkoutName: ref(''),
-        workouts: ref<Workout[]>([]),
-        newWorkout: ref<Workout>({
-          name: '',
-          sets: 0,
-          reps: 0,
-          privacy: 0,
-          exercises: [],
-          id: ''
-        }),
-      };
+import { defineComponent, ref } from 'vue';
+import { type Workout } from '@/model/workouts';
+import { type Exercise, getExerciseIndexByName } from '@/model/exercises';
+import PrivacyForm from './PrivacyForm.vue';
+import ExerciseList from './ExerciseList.vue';
+
+export default defineComponent({
+  data() {
+    return {
+      showModal: ref(false),
+      newWorkoutName: ref(''),
+      workouts: ref<Workout[]>([]),
+      newWorkout: ref<Workout>({
+        name: '',
+        sets: 0,
+        reps: 0,
+        privacy: 0,
+        exercises: [],
+        id: ''
+      }),
+    };
+  },
+  components: {
+    ExerciseList,
+    PrivacyForm
+  },
+  methods: {
+    openModal() {
+      this.showModal = true;
     },
-    components: {
-      ExerciseList,
-      PrivacyForm
+    closeModal() {
+      this.showModal = false;
+      this.newWorkoutName = '';
     },
-    methods: {
-      openModal() {
-        this.showModal = true;
-      },
-      closeModal() {
-        this.showModal = false;
+    addWorkout() {
+      const name = this.newWorkoutName.trim();
+      if (name) {
+        this.workouts.push(this.newWorkout);
         this.newWorkoutName = '';
-      },
-      addWorkout() {
-        const name = this.newWorkoutName.trim();
-        if (name) {
-          this.workouts.push(this.newWorkout);
-          this.newWorkoutName = '';
-          this.showModal = false;
-        }
-      },
-      updatePrivacy(value: number) {
-      this.newWorkout.privacy = value;
-      },
-      addExercise(exercise: Exercise){
-        this.newWorkout.exercises.push(getExerciseIndexByName(exercise.name));
-      },
-      removeExercise(exercise: Exercise) {
-        const index = this.newWorkout.exercises.indexOf(getExerciseIndexByName(exercise.name));
-        if (index > -1) {
-          this.newWorkout.exercises.splice(index, 1);
-        }
+        this.showModal = false;
       }
     },
-  });
+    updatePrivacy(value: number) {
+      this.newWorkout.privacy = value;
+    },
+    addExercise(exercise: Exercise) {
+      this.newWorkout.exercises.push(getExerciseIndexByName(exercise.name));
+    },
+    removeExercise(exercise: Exercise) {
+      const index = this.newWorkout.exercises.indexOf(getExerciseIndexByName(exercise.name));
+      if (index > -1) {
+        this.newWorkout.exercises.splice(index, 1);
+      }
+    }
+  },
+});
 </script>
 
 <template>
@@ -89,11 +89,11 @@
           <div class="columns">
             <div class="column">
               <p class="has-text-weight-bold">Base Exercises</p>
-              <ExerciseList @call:back="addExercise"/>
+              <ExerciseList @call:back="addExercise" />
             </div>
             <div class="column">
               <p class="has-text-weight-bold">Workout Exercises</p>
-              <ExerciseList :exerciseSubList="newWorkout.exercises" @call:back="removeExercise"/>
+              <ExerciseList :exerciseSubList="newWorkout.exercises" @call:back="removeExercise" />
             </div>
           </div>
           <p class="has-text-weight-bold has-text-centered">Visibility</p>

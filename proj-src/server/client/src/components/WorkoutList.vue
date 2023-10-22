@@ -1,6 +1,6 @@
 <script lang="ts">
 import { ref } from 'vue';
-import {getWorkoutsFromUser, type Workout} from '@/model/workouts';
+import { getWorkoutsFromUser, type Workout } from '@/model/workouts';
 import Privacy from '@/components/Privacy.vue';
 import ExerciseList from '@/components/ExerciseList.vue';
 
@@ -10,14 +10,14 @@ export default {
       type: String,
       required: true,
     },
-    
+
   },
   components: {
     ExerciseList,
     Privacy
   },
-  methods : {
-    addWorkout(workout : Workout) {
+  methods: {
+    addWorkout(workout: Workout) {
       this.workouts.push(workout);
     },
   },
@@ -32,16 +32,20 @@ export default {
 
 <template>
   <div>
-    <div class="columns is-multiline" style="margin-top: 20px;"> <!-- Added margin-top -->
+    <div class="columns is-multiline" style="margin-top: 20px;">
       <div class="column is-one-quarter" v-for="workout in workouts" :key="workout.id">
         <div class="square-card">
           <div class="card-content">
             <p class="title is-4 has-text-primary">{{ workout.name }}</p>
             <div class="content">
-              <p><strong>Exercises:</strong> <ExerciseList :exerciseSubList="workout.exercises"/></p>
+              <p><strong>Exercises:</strong>
+                <ExerciseList :exerciseSubList="workout.exercises" />
+              </p>
               <p><strong>Sets:</strong> {{ workout.sets }}</p>
               <p><strong>Reps:</strong> {{ workout.reps }}</p>
-              <p><strong>Privacy:</strong> <Privacy :privacy="workout.privacy"/></p>
+              <p>
+                <Privacy :privacy="workout.privacy" />
+              </p>
             </div>
             <button @click="" class="button is-info">Edit</button>
           </div>
@@ -86,5 +90,4 @@ export default {
   background-color: #275aa8;
 }
 
-/* You can add more custom styles as needed */
-</style>
+/* You can add more custom styles as needed */</style>

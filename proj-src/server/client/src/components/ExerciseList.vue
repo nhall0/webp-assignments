@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent} from 'vue';
+import { defineComponent } from 'vue';
 import { type Exercise, getExercises } from '@/model/exercises';
 
 export default defineComponent({
@@ -32,13 +32,13 @@ export default defineComponent({
 
 <style scoped>
 .exercise-list {
-  max-height: 400px; 
-  max-width: 400px; 
+  max-height: 400px;
+  max-width: 400px;
   overflow-y: auto;
   background-color: #fff;
   border: 1px solid #ccc;
-  border-radius: 5px; 
-  padding: 10px; 
+  border-radius: 5px;
+  padding: 10px;
 }
 
 .exercise-list button {
@@ -49,13 +49,15 @@ export default defineComponent({
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
-  display: block; /* Display the items vertically */
-  width: 95%; /* Make the items take the full width */
-  text-align: left; /* Align text to the left */
+  display: block;
+  /* Display the items vertically */
+  width: 95%;
+  /* Make the items take the full width */
+  text-align: left;
+  /* Align text to the left */
 }
 
 /* Style for button hover state */
 .exercise-list button:hover {
   background-color: #e0e0e0;
-}
-</style>
+}</style>

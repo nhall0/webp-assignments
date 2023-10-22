@@ -4,7 +4,7 @@ import NewWorkout from '@/components/NewWorkout.vue';
 import { getSession } from '@/model/session';
 
 const user = getSession().user;
-if(!user) {
+if (!user) {
   throw new Error('user is required');
 }
 

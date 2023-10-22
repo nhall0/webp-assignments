@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import LoginBadge from './LoginBadge.vue';
-import {getSession} from '../model/session'
+import { getSession } from '../model/session'
 
 const isActive = ref(false);
 const session = getSession();
@@ -16,7 +16,8 @@ const session = getSession();
         FH
       </a>
 
-      <a role="button" class="navbar-burger" :class="{ 'is-active': isActive }" @click="isActive = !isActive" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <a role="button" class="navbar-burger" :class="{ 'is-active': isActive }" @click="isActive = !isActive"
+        aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -25,7 +26,7 @@ const session = getSession();
 
     <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isActive }">
       <div class="navbar-start">
-        <RouterLink class="navbar-item" to="/" >Home</RouterLink>
+        <RouterLink class="navbar-item" to="/">Home</RouterLink>
         <RouterLink class="navbar-item" to="/workouts">Workouts</RouterLink>
         <RouterLink class="navbar-item" to="/goals">Goals</RouterLink>
       </div>
@@ -41,7 +42,6 @@ const session = getSession();
 
 
 <style scoped>
-
 .router-link-active {
 
   font-weight: bold;

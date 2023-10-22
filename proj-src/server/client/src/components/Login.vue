@@ -1,35 +1,37 @@
 <script lang="ts">
-  import { ref } from 'vue';  
-  import { login } from '../model/session'
+import { ref } from 'vue';
+import { login } from '../model/session'
 
-  export default {
-    setup(){
-      return {
-        activeTab,
-        loginUser,
-        loginPassword,
-        signupName,
-        signupEmail,
-        signupPassword,
-        changeTab,
-        login,
-        signup
-  }}}
-
-  var activeTab = ref("login");
-  var loginUser = ref("");
-  var loginPassword = ref("");
-  var signupName = ref("");
-  var signupEmail = ref("");
-  var signupPassword = ref("");
-
-  function changeTab(tab: string) {
-    activeTab.value = tab;
+export default {
+  setup() {
+    return {
+      activeTab,
+      loginUser,
+      loginPassword,
+      signupName,
+      signupEmail,
+      signupPassword,
+      changeTab,
+      login,
+      signup
+    }
   }
+}
 
-  function signup() {
-    console.log("Signup");
-  }
+var activeTab = ref("login");
+var loginUser = ref("");
+var loginPassword = ref("");
+var signupName = ref("");
+var signupEmail = ref("");
+var signupPassword = ref("");
+
+function changeTab(tab: string) {
+  activeTab.value = tab;
+}
+
+function signup() {
+  console.log("Signup");
+}
 
 </script>
 
@@ -66,7 +68,8 @@
               </div>
               <div class="field">
                 <div class="control">
-                  <RouterLink to='/' class="button is-primary is-fullwidth" @click.prevent="login(loginUser, loginPassword, $router)">Login</RouterLink>
+                  <RouterLink to='/' class="button is-primary is-fullwidth"
+                    @click.prevent="login(loginUser, loginPassword, $router)">Login</RouterLink>
                 </div>
               </div>
             </form>
@@ -106,20 +109,22 @@
 </template>
 
 <style scoped>
-    .form-container {
-      max-width: 400px;
-      margin: auto;
-      padding: 20px;
-      margin-top: 50px;
-    }
-    .tab-button {
-      cursor: pointer;
-    }
-     
-    .title-text {
-      font-family: 'Roboto', sans-serif; /* Modern font family */
-      font-size: 4rem; /* Adjust the font size as needed */
-      font-weight: bold;
-      margin-bottom: 50px;
-    }
-</style>
+.form-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  margin-top: 50px;
+}
+
+.tab-button {
+  cursor: pointer;
+}
+
+.title-text {
+  font-family: 'Roboto', sans-serif;
+  /* Modern font family */
+  font-size: 4rem;
+  /* Adjust the font size as needed */
+  font-weight: bold;
+  margin-bottom: 50px;
+}</style>

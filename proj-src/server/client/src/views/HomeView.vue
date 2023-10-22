@@ -7,7 +7,7 @@ import { getSession } from '@/model/session';
 const session = getSession();
 const user = session.user;
 
-if(!user) {
+if (!user) {
   throw new Error('User not found');
 }
 

@@ -20,18 +20,18 @@ export function getWorkouts() {
 
 export function getWorkoutsFromUser(userId: string) {
   const user = getUserById(userId);
-    if (!user) {
-        return [];
-    }
+  if (!user) {
+    return [];
+  }
 
   const userWorkouts = user.workouts;
   var returnWorkouts: Workout[] = [];
 
   for (let i = 0; i < userWorkouts.length; i++) {
-     var returnWorkout = getWorkoutById(userWorkouts[i])
-     if(returnWorkout != null){
-        returnWorkouts.push(returnWorkout);
-     }
+    var returnWorkout = getWorkoutById(userWorkouts[i])
+    if (returnWorkout != null) {
+      returnWorkouts.push(returnWorkout);
+    }
   }
 
   return returnWorkouts;

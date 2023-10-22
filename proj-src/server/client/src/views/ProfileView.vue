@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { getSession } from '@/model/session';
 
 const user = getSession().user;
-if(!user) {
+if (!user) {
   throw new Error('User is not logged in');
 }
 
@@ -32,7 +32,7 @@ const workoutStatistics = ref({
     <section class="section">
       <div class="container">
         <h1 class="title has-text-success">Your Profile</h1>
-        
+
         <!-- Profile Information -->
         <div class="box profile-box">
           <h2 class="subtitle">Profile Information</h2>
@@ -50,7 +50,8 @@ const workoutStatistics = ref({
             <div class="field">
               <label class="label">Current Password</label>
               <div class="control has-icons-left">
-                <input class="input" type="password" v-model="passwords.current" placeholder="Enter your current password">
+                <input class="input" type="password" v-model="passwords.current"
+                  placeholder="Enter your current password">
                 <span class="icon is-small is-left">
                   <i class="fas fa-lock"></i>
                 </span>

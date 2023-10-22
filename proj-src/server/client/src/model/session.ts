@@ -1,12 +1,12 @@
 import { reactive } from "vue";
 import { type Router } from 'vue-router';
-import { getUsers, type User} from '@/model/users';
+import { getUsers, type User } from '@/model/users';
 
 const session = reactive({
   user: null as User | null,
 })
 
-export function getSession(){
+export function getSession() {
   return session;
 }
 

@@ -22,7 +22,7 @@ const userCount = state.users ? Object.keys(state.users).length : 0;
     <section class="section">
       <div class="container">
         <h1 class="title">Admin Page</h1>
-        
+
         <!-- User Management -->
         <div class="box">
           <h2 class="subtitle">User Management</h2>

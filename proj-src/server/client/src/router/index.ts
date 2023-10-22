@@ -10,13 +10,13 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('../views/HomeView.vue'),
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true }
     },
     {
       path: '/admin',
       name: 'admin',
       component: () => import('../views/AdminView.vue'),
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -27,40 +27,40 @@ const router = createRouter({
       path: '/friends',
       name: 'friends',
       component: () => import('../views/FriendsView.vue'),
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true }
     },
     {
       path: '/goals',
       name: 'goals',
       component: () => import('../views/GoalsView.vue'),
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true }
     },
     {
       path: '/profile',
       name: 'profile',
       component: () => import('../views/ProfileView.vue'),
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true }
     },
     {
       path: '/settings',
       name: 'settings',
       component: () => import('../views/SettingsView.vue'),
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true }
     },
     {
       path: '/workouts',
       name: 'workouts',
       component: () => import('../views/WorkoutsView.vue'),
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true }
     }
   ]
 });
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !session.user) {
-    next({ name: 'login' }); 
+    next({ name: 'login' });
   } else {
-    next();  
+    next();
   }
 });
 
