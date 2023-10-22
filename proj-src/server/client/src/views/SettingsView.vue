@@ -18,7 +18,6 @@ const notificationSettings = ref({
 <template>
   <div class="settings-page">
     <section class="section">
-      <div class="container">
         <h1 class="title has-text-success">Settings</h1>
 
         <div class="box settings-box">
@@ -63,7 +62,6 @@ const notificationSettings = ref({
           </div>
         </div>
 
-      </div>
     </section>
   </div>
 </template>

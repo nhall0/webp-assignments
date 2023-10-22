@@ -40,8 +40,3 @@ export default defineComponent({
   </div>
 </template>
   
-<style scoped>
-.button.is-active {
-  background-color: green;
-  color: white;
-}</style>

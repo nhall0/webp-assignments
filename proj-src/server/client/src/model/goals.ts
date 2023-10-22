@@ -1,5 +1,9 @@
-import goals from '@/data/goals.json';
+import goalsData from '@/data/goals.json';
 import * as cronParser from 'cron-parser';
+import { v4 as uuidv4 } from 'uuid';
+import { addGoal } from './users';
+
+export let goals: { [key: string]: Goal } = goalsData as unknown as { [key: string]: Goal };
 
 export interface Goal {
   id: string;
@@ -8,6 +12,15 @@ export interface Goal {
   privacy: number;
   repetition: string;
   workout: string;
+}
+
+export function postNewGoal(goal: Goal, userId: string) {
+  if(goal.id == ''){
+    const id = uuidv4();
+    goal.id = id;
+  }
+  goals[goal.id] = goal;
+  addGoal(userId, goal.id);
 }
 
 export function getGoalById(id: string) {
@@ -19,7 +32,11 @@ export function getGoalByIds(ids: string[]) {
 }
 
 export function getGoals() {
-  return Object.entries(goals).map(([id, goalData]) => ({ id, ...goalData }));
+  return Object.keys(goals).map((key) => {
+    const goal = goals[key];
+    goal.id = key;
+    return goal;
+  });
 }
 
 export function getMonthsDatesFromCron(cron: string, month: number) {
@@ -73,11 +90,39 @@ export function getGoalCronByDays(time: number, days: string[]) {
   return (`0 0 ${time} ? * ${cronDays} *`);
 }
 
-
 export function getNextDateFromCron(cron: string) {
   const interval = cronParser.parseExpression(cron);
 
   const next = interval.next();
 
   return next.toDate().toLocaleString();
+}
+
+export function getWeekdaysFromCron(cron: string) {
+ var days = cron.split(" ")[5];
+ var weekdays = [] as string[];
+
+ if(days != null){
+  weekdays = days.split(",");
+ }
+
+ if(weekdays[0] === "*") {
+   return [];
+ }
+ else {
+  return weekdays;
+ }
+}
+
+export function getTimeFromCron(cron: string) {
+  return(cron.split(" ")[2]);
+}
+
+export function getOccurrenceFromCron(cron: string) {
+  if(cron.split(" ")[5] === "*") {
+    return "Daily";
+  }
+  else {
+    return "Weekly";
+  }
 }

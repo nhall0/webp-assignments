@@ -12,7 +12,7 @@ if (!user) {
 
 <template>
   <section class="section">
-    <h1 class="title">My Workouts</h1>
+    <h1 class="title has-text-primary">Workouts</h1>
     <NewWorkout :user="user.id" />
     <WorkoutList :user="user.id" />
   </section>

@@ -50,14 +50,10 @@ export default defineComponent({
   cursor: pointer;
   transition: background-color 0.3s;
   display: block;
-  /* Display the items vertically */
   width: 95%;
-  /* Make the items take the full width */
   text-align: left;
-  /* Align text to the left */
 }
 
-/* Style for button hover state */
 .exercise-list button:hover {
   background-color: #e0e0e0;
 }</style>

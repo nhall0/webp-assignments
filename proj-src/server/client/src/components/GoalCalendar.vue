@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { getMonthsDatesFromCron } from '@/model/goals';
+
+import { getMonthsDatesFromCron, getGoalByIds  } from '@/model/goals';
 import { getSession } from '@/model/session';
-import { getGoalByIds } from '@/model/goals';
 import { getPostsByDate } from '@/model/posts';
 import { getWorkoutById } from '@/model/workouts';
 
@@ -14,7 +14,6 @@ interface CalendarDay {
 }
 
 const getGoalBackgroundClass = (goal: string, posts: string[]) => {
-    // Check if the goal corresponds to a workout in posts
     if (posts.includes(goal)) {
         return 'rounded-box green-bg';
     } else {
@@ -24,26 +23,14 @@ const getGoalBackgroundClass = (goal: string, posts: string[]) => {
 
 export default defineComponent({
     setup() {
-        const currentMonth = ref(new Date());
-        const calendarDays = ref<CalendarDay[]>([]);
         const session = getSession().user;
 
         if (!session) {
             throw new Error('Session not found');
         }
 
-        const userGoals = getGoalByIds(session.goals);
-        const monthDates: Record<string, string[]> = {};
-
-        for (let goal of userGoals) {
-            const dates = getMonthsDatesFromCron(goal.repetition, currentMonth.value.getMonth());
-            for (let date of dates) {
-                if (!monthDates[date]) {
-                    monthDates[date] = [];
-                }
-                monthDates[date].push(getWorkoutById(goal.workout)?.name || 'Workout not found');
-            }
-        }
+        const currentMonth = ref(new Date());
+        const calendarDays = ref<CalendarDay[]>([]);
 
         const previousMonth = () => {
             currentMonth.value.setMonth(currentMonth.value.getMonth() - 1);
@@ -56,6 +43,19 @@ export default defineComponent({
         };
 
         const calculateCalendarDays = () => {
+            const userGoals = getGoalByIds(session.goals);
+            const monthDates: Record<string, string[]> = {};
+
+            for (let goal of userGoals) {
+                const dates = getMonthsDatesFromCron(goal.repetition, currentMonth.value.getMonth());
+                for (let date of dates) {
+                    if (!monthDates[date]) {
+                        monthDates[date] = [];
+                    }
+                    monthDates[date].push(getWorkoutById(goal.workout)?.name || 'Workout not found');
+                }
+            }
+
             const daysInMonth: CalendarDay[] = [];
             const currentYear = currentMonth.value.getFullYear();
             const currentMonthValue = currentMonth.value.getMonth();
@@ -93,25 +93,16 @@ export default defineComponent({
 <template>
     <div class="calendar">
         <div class="calendar-header">
-            <button @click="previousMonth" class="button is-info">Previous</button>
+            <button @click="previousMonth" class="button">Previous</button>
             <h2>{{ currentMonth.toLocaleDateString() }}</h2>
-            <button @click="nextMonth" class="button is-info">Next</button>
+            <button @click="nextMonth" class="button">Next</button>
         </div>
         <div class="calendar-grid">
             <div class="calendar-day" v-for="day in calendarDays" :key="day.label">
                 <div class="day-label">{{ day.label }}</div>
                 <div class="day-content">
-                    <div class="section-title">
-                        Goals
-                    </div>
                     <div v-for="goal in day.goals" :key="goal" :class="getGoalBackgroundClass(goal, day.posts)">
                         {{ goal }}
-                    </div>
-                    <div class="section-title">
-                        Workouts
-                    </div>
-                    <div v-for="post in day.posts" :key="post" class="rounded-box blue-bg">
-                        {{ post }}
                     </div>
                 </div>
             </div>
@@ -120,11 +111,10 @@ export default defineComponent({
 
     </div>
 </template>
-  
 
 <style scoped>
 .rounded-box {
-    background-color: #3273dc;
+    background-color: #dc3232;
     color: white;
     padding: 5px;
     border-radius: 10px;
@@ -153,9 +143,15 @@ export default defineComponent({
 }
 
 .calendar-header button {
-    background: transparent;
     border: none;
     cursor: pointer;
+    margin: 0 5px;
+    background-color: #3273dc;
+    color: white;
+}
+
+.calendar-header button:hover {
+    background-color: #2769c4;
 }
 
 .calendar-grid {
@@ -185,7 +181,5 @@ export default defineComponent({
 .posts {
     margin-top: 5px;
 }
-
-/* Add additional styling for goals and posts here */
 </style>
   

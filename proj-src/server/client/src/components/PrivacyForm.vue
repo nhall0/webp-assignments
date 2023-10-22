@@ -32,9 +32,7 @@ export default defineComponent({
 
 .button.is-active {
   background-color: #3273dc;
-  /* Nicer background color, e.g., a shade of blue */
   color: #fff;
-  /* Nicer text color, e.g., white */
 }
 
 .is-rounded {

@@ -2,7 +2,6 @@
   <div class="friends-page">
     <section class="section">
       <div class="container">
-        <!-- Friends List -->
         <div class="box friends-box">
           <h2 class="subtitle">Friends List</h2>
           <ul>
@@ -12,7 +11,6 @@
                 <p><strong>Email:</strong> {{ friend.email }}</p>
                 <p><strong>First Name:</strong> {{ friend.firstName }}</p>
                 <p><strong>Last Name:</strong> {{ friend.lastName }}</p>
-                <!-- Add more friend information as needed -->
                 <button @click="removeFriend(friend)">Remove Friend</button>
               </div>
             </li>
@@ -33,12 +31,10 @@ const user = session.user as User;
 const friends = getFriendsByUser(user);
 
 const removeFriend = (friend: User) => {
-  // Implement logic to remove the friend
 };
 </script>
   
 <style scoped>
-/* Additional styles for friends-box */
 .friends-box {
   border: 2px solid #00D1B2;
   border-radius: 10px;
@@ -58,7 +54,6 @@ const removeFriend = (friend: User) => {
   margin: 0;
 }
 
-/* Additional styles for the friend cards */
 button {
   background-color: #FF3860;
   color: white;

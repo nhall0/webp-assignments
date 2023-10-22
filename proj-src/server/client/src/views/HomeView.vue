@@ -25,34 +25,28 @@ export default defineComponent({
 });
 
 </script>
-
 <template>
   <div class="home-page">
     <section class="section">
       <div class="container">
-        <h1 class="title">My Feed</h1>
+        <h1 class="title has-text-primary">FitnessHero</h1>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
-        <div class="columns">
-          <div class="column is-two-thirds">
-            <div class="box">
-              <h2 class="subtitle">Create a New Session</h2>
-              <NewPost />
-            </div>
-
-            <div class="box">
-              <h2 class="subtitle">Your Activity</h2>
-              <PostList :userIds="userIds" />
+        <div class="columns is-variable is-5 " >
+          <div class="column is-half-desktop is-half-tablet is-full-mobile" style="height: 100%;">
+            <div class="custom-box">
+              <h2 class="custom-subtitle">Your Feed</h2>
+              <PostList :userIds="allIds" />
             </div>
           </div>
+          <div class="column is-half-desktop is-half-tablet is-full-mobile" style="height: 100%;">
+            <div class="custom-box">
 
-          <div class="column">
-            <div class="box">
-              <h2 class="subtitle">Your Friends Activity</h2>
-              <PostList :userIds="allIds" />
+              <NewPost />
+              <PostList :userIds="userIds" />
             </div>
           </div>
         </div>
@@ -60,49 +54,25 @@ export default defineComponent({
     </section>
   </div>
 </template>
-  
+
 <style scoped>
-/* Add your scoped CSS styling for this component */
-.home-page {
-  padding: 20px;
-}
-
-.box {
-  padding: 20px;
-  border: 1px solid #ccc;
+.custom-box {
+  background-color: #f5f5f5;
+  padding: 15px;
   border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+  height: 100vh;
 }
 
-.title {
-  font-size: 2rem;
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.subtitle {
+.custom-subtitle {
   font-size: 1.5rem;
   color: #555;
 }
 
-.column.is-two-thirds {
-  background-color: #f5f5f5;
-}
-
-.column.is-two-thirds .box {
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
 .column {
-  background-color: #eaeaea;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
-
-.column .box {
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Add more styles as needed */
 </style>

@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue';
 import { getSession } from '@/model/session';
 import WorkoutListSimple from '@/components/WorkoutListSimple.vue';
-import { getWorkoutById } from '@/model/workouts';
+import { addPost } from '@/model/posts';
 
 const session = getSession();
 
@@ -16,11 +16,16 @@ export default defineComponent({
   },
   methods: {
     selectWorkout(workoutId: string) {
-      return getWorkoutById(workoutId);
+      this.workout = workoutId;
     },
     createPost() {
-      console.log(this.postName);
-      console.log(this.postDate);
+      addPost({
+        name: this.postName,
+        date: this.postDate,
+        workout: this.workout,
+        owner: this.user,
+        id: ''
+      })
     }
   },
   setup() {
@@ -30,6 +35,7 @@ export default defineComponent({
       user: user.id,
       postName: '',
       postDate: '',
+      workout: ''
     };
   },
 });
@@ -63,6 +69,35 @@ export default defineComponent({
     </div>
   </div>
 </template>
-  
 
-<style scoped></style>
+<style scoped>
+.post-form {
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.label {
+  font-weight: bold;
+}
+
+.input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.button {
+  width: 100%;
+}
+</style>

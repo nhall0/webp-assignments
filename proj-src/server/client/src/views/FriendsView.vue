@@ -7,7 +7,7 @@ import FriendsList from '@/components/FriendsList.vue';
   <div class="friends-page">
     <section class="section">
       <div class="container">
-        <h1 class="title">Your Friends</h1>
+        <h1 class="title has-text-success">Your Friends</h1>
 
         <div class="search-bar">
           <input class="input" type="text" placeholder="Search for friends..." />

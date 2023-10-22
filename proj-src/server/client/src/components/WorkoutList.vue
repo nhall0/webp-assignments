@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { getWorkoutsFromUser, type Workout } from '@/model/workouts';
 import Privacy from '@/components/Privacy.vue';
 import ExerciseList from '@/components/ExerciseList.vue';
+import EditWorkout from './EditWorkout.vue';
 
 export default {
   props: {
@@ -14,7 +15,8 @@ export default {
   },
   components: {
     ExerciseList,
-    Privacy
+    Privacy,
+    EditWorkout
   },
   methods: {
     addWorkout(workout: Workout) {
@@ -46,8 +48,9 @@ export default {
               <p>
                 <Privacy :privacy="workout.privacy" />
               </p>
+              <EditWorkout :newWorkout="workout" />
             </div>
-            <button @click="" class="button is-info">Edit</button>
+            
           </div>
         </div>
       </div>
@@ -68,10 +71,6 @@ export default {
   min-width: 200;
 }
 
-.square-card:hover {
-  transform: scale(1.05);
-}
-
 .has-text-primary {
   color: #3273dc;
 }
@@ -89,5 +88,4 @@ export default {
 .button.is-info:hover {
   background-color: #275aa8;
 }
-
-/* You can add more custom styles as needed */</style>
+</style>

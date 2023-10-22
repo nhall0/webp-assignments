@@ -52,6 +52,7 @@ export default defineComponent({
 <style scoped>
 .post-list {
   padding: 20px;
+  min-width: 200;
 }
 
 .post-item {

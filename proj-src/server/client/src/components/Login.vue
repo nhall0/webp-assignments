@@ -122,9 +122,7 @@ function signup() {
 
 .title-text {
   font-family: 'Roboto', sans-serif;
-  /* Modern font family */
   font-size: 4rem;
-  /* Adjust the font size as needed */
   font-weight: bold;
   margin-bottom: 50px;
 }</style>

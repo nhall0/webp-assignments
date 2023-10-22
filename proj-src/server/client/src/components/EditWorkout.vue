@@ -7,19 +7,17 @@ import ExerciseList from './ExerciseList.vue';
 import { getSession } from '@/model/session';
 
 export default defineComponent({
-  data() {
+  props:{
+    newWorkout: {
+      type: Object as () => Workout,
+      required: true
+    }
+  },
+  setup() {
     return {
       showModal: ref(false),
       newWorkoutName: ref(''),
-      workouts: ref<Workout[]>([]),
-      newWorkout: ref<Workout>({
-        name: '',
-        sets: 0,
-        reps: 0,
-        privacy: 0,
-        exercises: [],
-        id: ''
-      }),
+      workouts: ref<Workout[]>([])
     };
   },
   components: {
@@ -34,7 +32,7 @@ export default defineComponent({
       this.showModal = false;
       this.newWorkoutName = '';
     },
-    addWorkout() {
+    saveWorkout() {
       const session = getSession();
       if (!session.user?.id) {
         throw new Error('User not found');
@@ -61,12 +59,12 @@ export default defineComponent({
 
 <template>
   <div>
-    <button @click="openModal" class="create-button button">Create New Workout</button>
+    <button @click="openModal" class="create-button button">Edit</button>
     <div v-if="showModal" class="modal is-active">
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Create New Workout</p>
+          <p class="modal-card-title">Edit Workout</p>
           <button @click="closeModal" class="delete" aria-label="close"></button>
         </header>
         <section class="modal-card-body">
@@ -102,7 +100,7 @@ export default defineComponent({
           <PrivacyForm :privacy="newWorkout.privacy" @update:privacy="updatePrivacy" />
         </section>
         <footer class="modal-card-foot">
-          <button @click="addWorkout" class="button is-success">Add Workout</button>
+          <button @click="saveWorkout" class="button is-success">Save Workout</button>
           <button @click="closeModal" class="button">Close</button>
         </footer>
       </div>
@@ -134,7 +132,6 @@ export default defineComponent({
   max-width: 500px;
   width: 100%;
 }
-
 .modal-card-head {
   background-color: #3273dc;
   color: #fff;

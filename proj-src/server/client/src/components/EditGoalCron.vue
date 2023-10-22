@@ -1,26 +1,26 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { type Goal, postNewGoal} from '@/model/goals';
+import { type Goal, getOccurrenceFromCron, getTimeFromCron, getWeekdaysFromCron, postNewGoal } from '@/model/goals';
 import { getSession } from '@/model/session';
 import { getWorkoutById } from '@/model/workouts';
 import PrivacyForm from './PrivacyForm.vue';
 import WorkoutListSimple from './WorkoutListSimple.vue';
 
 export default defineComponent({
+  props: {
+    newGoal: {
+      type: Object as () => Goal,
+      required: true
+    }
+  },
   data() {
     return {
       showModal: ref(false),
-      newGoal: ref<Goal>({
-        name: '',
-        owner: '',
-        privacy: 0,
-        repetition: '',
-        workout: '',
-        id: ''
-      }),
-      selectedTime: '',
-      selectedOccurrence: 'daily',
-      selectedWeekdays: [],
+      name: this.newGoal.name,
+      selectedTime: getTimeFromCron(this.newGoal.repetition),
+      selectedOccurrence: getOccurrenceFromCron(this.newGoal.repetition),
+      workout: this.newGoal.workout,
+      selectedWeekdays: getWeekdaysFromCron(this.newGoal.repetition),
       daysOfWeek: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
     };
   },
@@ -30,7 +30,7 @@ export default defineComponent({
   },
   methods: {
     selectWorkout(workoutId: string) {
-      this.newGoal.workout = workoutId;
+      this.workout = workoutId;
       return getWorkoutById(workoutId);
     },
     showFunctionModal() {
@@ -39,45 +39,42 @@ export default defineComponent({
     closeFunctionModal() {
       this.showModal = false;
     },
-    makeNewGoal() {
-      var hour = this.selectedTime.split(':')[0];
-      this.newGoal.repetition = `0 0 ${hour} ? * ${this.selectedWeekdays.join(',')} *`;
-      this.newGoal.owner = this.user;
+    editGoal() {
       postNewGoal(this.newGoal, this.user);
       this.closeFunctionModal();
     },
     updatePrivacy(privacy: number) {
-      this.newGoal.privacy = privacy;
       return privacy;
     }
   },
   setup() {
+    const privacy = ref(0);
     const session = getSession();
 
     if (!session.user?.id) {
       throw new Error('User not found');
     }
 
-    return {user: session.user.id };
+    return { privacy, user: session.user.id };
   },
 });
 </script>
 
 <template>
   <div>
-    <button @click="showFunctionModal" class="create-button button">Create New Goal</button>
+    <button @click="showFunctionModal" class="create-button button">Edit</button>
     <div v-if="showModal" class="modal is-active">
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Create New Goal</p>
+          <p class="modal-card-title">Edit Goal</p>
           <button @click="closeFunctionModal" class="delete" aria-label="close"></button>
         </header>
         <section class="modal-card-body">
           <div class="field">
             <label for="goalName" class="label">Goal Name:</label>
             <div class="control">
-              <input v-model="newGoal.name" type="text" id="goalName" class="input" placeholder="Goal Name" />
+              <input v-model="name" type="text" id="goalName" class="input" placeholder="Goal Name" />
             </div>
           </div>
 
@@ -123,7 +120,7 @@ export default defineComponent({
 
         </section>
         <footer class="modal-card-foot">
-          <button @click="makeNewGoal" class="button is-success">Add Goal</button>
+          <button @click="editGoal" class="button is-success">Save Changes</button>
           <button @click="closeFunctionModal" class="button">Close</button>
         </footer>
       </div>

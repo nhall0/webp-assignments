@@ -3,6 +3,7 @@ import { defineComponent } from 'vue';
 import { getGoalByIds, getNextDateFromCron } from '@/model/goals';
 import { getUserById } from '@/model/users';
 import { getWorkoutById } from '@/model/workouts';
+import EditGoalCron from './EditGoalCron.vue';
 
 import Privacy from './Privacy.vue';
 
@@ -13,20 +14,9 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
-    const user = getUserById(props.userId);
-
-    if (!user) {
-      throw new Error(`User with id ${props.userId} not found`);
-    }
-
-    const userGoals = getGoalByIds(user.goals);
-    return {
-      userGoals
-    };
-  },
   components: {
-    Privacy
+    Privacy,
+    EditGoalCron
   },
   methods: {
     getWorkoutName(workoutId: string) {
@@ -36,14 +26,27 @@ export default defineComponent({
     getNextDateFromCron(cron: string) {
       return getNextDateFromCron(cron);
     }
-  }
+  },
+  computed: {
+    userGoals() {
+      const user = getUserById(this.userId);
+      if (!user) {
+        throw new Error(`User with id ${this.userId} not found`);
+      }
+      const goals = getGoalByIds(user.goals);
+      if (!goals) {
+        throw new Error(`Goals for user with id ${this.userId} not found`);
+      }
+      return goals; 
+    }
+    }
 });
 </script>
 
 <template>
   <div>
     <ul class="goal-list">
-      <li v-for="(goal, index) in userGoals" :key="index" class="goal-item box">
+      <li v-for="(goal) in userGoals" :key="goal.name" class="goal-item box">
         <div class="goal-info">
           <h3 class="goal-name is-size-4">{{ goal.name }}</h3>
           <p class="goal-detail"><strong>Next Date:</strong> {{ getNextDateFromCron(goal.repetition) }}</p>
@@ -52,7 +55,7 @@ export default defineComponent({
             <Privacy :privacy="goal.privacy" />
           </p>
         </div>
-        <button @click="" class="button is-info">Edit</button>
+        <EditGoalCron :new-goal="goal" />
       </li>
     </ul>
   </div>
@@ -75,7 +78,6 @@ export default defineComponent({
 
 .goal-item {
   max-width: 400px;
-  /* Adjust the maximum width as needed */
   background-color: #f5f5f5;
   padding: 15px;
   margin: 10px 0;
