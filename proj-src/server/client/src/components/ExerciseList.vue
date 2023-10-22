@@ -1,28 +1,30 @@
 <script lang="ts">
-import { getExercises} from '@/model/exercises';
+import { defineComponent} from 'vue';
+import { type Exercise, getExercises } from '@/model/exercises';
 
-export default {
+export default defineComponent({
   props: {
     exerciseSubList: {
       type: Array as () => number[],
       required: false,
-    },
-    callBack: {
-      type: Function,
-      required: false,
+    }
+  },
+  methods: {
+    sendCallBack(exercise: Exercise) {
+      this.$emit('call:back', exercise);
     },
   },
   setup() {
     return {
-       getExercises
+      getExercises
     };
   },
-};
+});
 </script>
 
 <template>
   <div class="exercise-list">
-    <button v-for="exercise in getExercises(exerciseSubList)" :key="exercise.name">
+    <button v-for="exercise in getExercises(exerciseSubList)" :key="exercise.name" @click="sendCallBack(exercise)">
       {{ exercise.name }}
     </button>
   </div>
@@ -30,16 +32,15 @@ export default {
 
 <style scoped>
 .exercise-list {
-  max-height: 400px; /* Add a maximum height to enable a scrollbar */
-  max-width: 400px; /* Set a maximum width */
-  overflow-y: auto; /* Enable vertical scrollbar when content overflows */
-  background-color: #fff; /* Set a white background color */
-  border: 1px solid #ccc; /* Add a border */
-  border-radius: 5px; /* Add border radius for rounded corners */
-  padding: 10px; /* Add some padding */
+  max-height: 400px; 
+  max-width: 400px; 
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px; 
+  padding: 10px; 
 }
 
-/* Add Bulma classes for list items */
 .exercise-list button {
   background-color: #f5f5f5;
   border: 1px solid #ddd;

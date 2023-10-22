@@ -2,10 +2,6 @@
 import { RouterView } from 'vue-router'
 import NavBar from './components/Nav.vue';
 import Footer from './components/Footer.vue';
-import { getSession } from './model/session';
-
-const session = getSession();
-
 </script>
 
 <template>
@@ -23,13 +19,13 @@ const session = getSession();
 
 <style scoped>
   body {
-    background-color: azure;
+    background-color: rgb(229, 255, 249);
   }
 
   .container {
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    background-color: rgb(255, 255, 255);
     padding: 5px;
     min-height: 100vh;
+    max-width: 100%;
   }
 </style>

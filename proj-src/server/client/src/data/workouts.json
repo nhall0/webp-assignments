@@ -8,6 +8,15 @@
         "reps":8,
         "privacy":0
     },
+    "a750fd6e-18b1-411a-80db-af03fafa68b2":{
+        "name":"My Leg Day",
+        "exercises":[
+            6,10
+        ],
+        "sets":2,
+        "reps":20,
+        "privacy":2
+    },
     "ebbc14e1-0060-4acc-9ab8-6c6647c0653c":{
         "name":"Test Workout",
         "exercises":[

@@ -43,6 +43,7 @@ const session = getSession();
 <style scoped>
 
 .router-link-active {
+
   font-weight: bold;
   border-bottom: 2px solid #00d1b2;
 }

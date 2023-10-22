@@ -14,6 +14,11 @@ export function getExerciseById(index:number){
   return exercises[index];
 }
 
+export function getExerciseIndexByName(name:string){
+  const exercises = getExercises();
+  return exercises.findIndex(exercise => exercise.name === name);
+}
+
 export function getExercises(subList?: number[]): Exercise[] {
     const returnExercises: Exercise[] = [];
     

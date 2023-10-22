@@ -19,36 +19,48 @@ const notificationSettings = ref({
   <div class="settings-page">
     <section class="section">
       <div class="container">
-        <h1 class="title">Settings</h1>
+        <h1 class="title has-text-success">Settings</h1>
         
-        <div class="box">
+        <div class="box settings-box">
           <h2 class="subtitle">Profile Settings</h2>
           <form>
             <div class="field">
               <label class="label">Name</label>
-              <div class="control">
+              <div class="control has-icons-left">
                 <input class="input" type="text" v-model="profile.name" placeholder="Enter your name">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-user"></i>
+                </span>
               </div>
             </div>
             <div class="field">
               <label class="label">Email</label>
-              <div class="control">
+              <div class="control has-icons-left">
                 <input class="input" type="email" v-model="profile.email" placeholder="Enter your email">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
               </div>
             </div>
             <div class="field">
-              <button class="button is-primary" type="submit">Save Changes</button>
+              <button class="button is-success" type="submit">
+                <span class="icon is-small">
+                  <i class="fas fa-save"></i>
+                </span>
+                <span>Save Changes</span>
+              </button>
             </div>
           </form>
         </div>
 
-        <div class="box">
+        <div class="box settings-box">
           <h2 class="subtitle">Notification Settings</h2>
           <div class="field">
-            <input id="emailNotifications" type="checkbox" v-model="notificationSettings.email">
-            <label for="emailNotifications">Receive Email Notifications</label>
+            <label class="checkbox">
+              <input id="emailNotifications" type="checkbox" v-model="notificationSettings.email">
+              Receive Email Notifications
+            </label>
           </div>
- 
         </div>
 
       </div>
@@ -57,8 +69,18 @@ const notificationSettings = ref({
 </template>
 
 <style scoped>
-
 .settings-page {
   padding: 20px;
+}
+
+.settings-box {
+  border: 2px solid #00D1B2;
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 20px;
+}
+
+.icon.is-small {
+  margin-right: 5px;
 }
 </style>

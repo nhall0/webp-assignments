@@ -9,16 +9,12 @@ if(!user) {
 }
 
 </script>
+
 <template>
   <section class="section">
-    <div class="panel">
-      <p class="panel-heading">New Workout</p>
-      <NewWorkout :user=user.id />
-    </div>
-    <div class="panel">
-      <p class="panel-heading">Workouts</p>
-        <WorkoutList :user=user.id />
-    </div>
+    <h1 class="title">My Workouts</h1>
+    <NewWorkout :user="user.id" />
+    <WorkoutList :user="user.id" />
   </section>
 </template>
 
@@ -28,5 +24,4 @@ if(!user) {
   flex-direction: column;
   min-height: 100vh;
 }
-
 </style>

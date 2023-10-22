@@ -1,7 +1,8 @@
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
   import {type Workout} from '@/model/workouts';
-  import Privacy from './Privacy.vue';
+  import {type Exercise, getExerciseIndexByName} from '@/model/exercises';
+  import PrivacyForm from './PrivacyForm.vue';
   import ExerciseList from './ExerciseList.vue';
   
   export default defineComponent({
@@ -22,7 +23,7 @@
     },
     components: {
       ExerciseList,
-      Privacy
+      PrivacyForm
     },
     methods: {
       openModal() {
@@ -42,14 +43,23 @@
       },
       updatePrivacy(value: number) {
       this.newWorkout.privacy = value;
-    }
+      },
+      addExercise(exercise: Exercise){
+        this.newWorkout.exercises.push(getExerciseIndexByName(exercise.name));
+      },
+      removeExercise(exercise: Exercise) {
+        const index = this.newWorkout.exercises.indexOf(getExerciseIndexByName(exercise.name));
+        if (index > -1) {
+          this.newWorkout.exercises.splice(index, 1);
+        }
+      }
     },
   });
 </script>
 
 <template>
   <div>
-    <button @click="openModal" class="create-button button is-success">Create New Workout</button>
+    <button @click="openModal" class="create-button button">Create New Workout</button>
     <div v-if="showModal" class="modal is-active">
       <div class="modal-background"></div>
       <div class="modal-card">
@@ -76,7 +86,18 @@
               <input v-model="newWorkout.reps" type="number" id="reps" class="input" />
             </div>
           </div>
-          <Privacy :privacy="newWorkout.privacy" @update:privacy="updatePrivacy" />
+          <div class="columns">
+            <div class="column">
+              <p class="has-text-weight-bold">Base Exercises</p>
+              <ExerciseList @call:back="addExercise"/>
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold">Workout Exercises</p>
+              <ExerciseList :exerciseSubList="newWorkout.exercises" @call:back="removeExercise"/>
+            </div>
+          </div>
+          <p class="has-text-weight-bold has-text-centered">Visibility</p>
+          <PrivacyForm :privacy="newWorkout.privacy" @update:privacy="updatePrivacy" />
         </section>
         <footer class="modal-card-foot">
           <button @click="addWorkout" class="button is-success">Add Workout</button>
@@ -95,30 +116,51 @@
 
 <style scoped>
 .create-button {
-  background-color: green;
+  background-color: #3273dc;
   color: white;
   padding: 10px;
   border: none;
   cursor: pointer;
 }
 
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
+.create-button:hover {
+  background-color: #0749b3;
+  color: white;
+}
+
+.modal-card {
+  max-width: 500px;
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
+}
+
+.modal-card-head {
+  background-color: #3273dc;
+  color: #fff;
+}
+
+.modal-card-title {
+  color: #fff;
+}
+
+.modal-card-body {
+  padding: 20px;
+}
+
+.modal-card-foot {
+  background-color: #f5f5f5;
 }
 
 .modal-content {
   background: white;
-  padding: 20px;
   border-radius: 5px;
+  text-align: center;
+}
+
+.has-text-weight-bold {
+  font-weight: bold;
+}
+
+.has-text-centered {
   text-align: center;
 }
 </style>
