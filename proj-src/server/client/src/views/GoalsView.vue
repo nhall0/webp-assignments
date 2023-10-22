@@ -2,7 +2,7 @@
   <div class="fitness-goals-page">
     <section class="section">
       <div class="container">
-        <h1 class="title">Fitness Goals</h1>
+        <h1 class="title">My Goals</h1>
         
         <!-- Set Fitness Goals Section -->
         <div class="box">

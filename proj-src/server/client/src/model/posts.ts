@@ -16,10 +16,16 @@ export function getPosts(){
     return Object.entries(posts).map(([id, postData]) => ({ id, ...postData }));
 }
 
-export function getPostsByUser(user:string){
-    return getPosts().filter(post => post.owner === user);
-}
-
-export function getPostsByWorkout(workout:string){
-    return getPosts().filter(post => post.workout === workout);
-}
+export function getPostsByUsers(users: string[]) {
+    // Filter posts by users
+    const filteredPosts = getPosts().filter((post) => users.includes(post.owner));
+  
+    // Sort filtered posts by date (latest to oldest)
+    const sortedPosts = filteredPosts.sort((a, b) => {
+      const dateA = new Date(a.date).getTime() as number;
+      const dateB = new Date(b.date).getTime() as number;
+      return dateB - dateA;
+    });
+  
+    return sortedPosts;
+  }
