@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, toRefs} from 'vue';
+import { defineComponent, ref} from 'vue';
 
 import { getMonthsDatesFromCron, type Goal} from '@/model/goals';
 import { getSession } from '@/model/session';
@@ -29,8 +29,6 @@ export default defineComponent({
         },
     },
     data(props) {
-        const { userGoals : userGoalsProps } = toRefs(props);
-
         const session = getSession().user;
 
         if (!session) {
@@ -53,7 +51,7 @@ export default defineComponent({
         const calculateCalendarDays = () => {
             const monthDates: Record<string, string[]> = {};
 
-            for (let goal of userGoalsProps.value) {
+            for (let goal of props.userGoals) {
                 const dates = getMonthsDatesFromCron(goal.repetition, currentMonth.value.getMonth());
                 for (let date of dates) {
                     if (!monthDates[date]) {

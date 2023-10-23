@@ -1,5 +1,5 @@
 <script lang="ts">
-import { toRefs, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import {type Workout} from '@/model/workouts';
 import Privacy from '@/components/Privacy.vue';
 import ExerciseList from '@/components/ExerciseList.vue';
@@ -24,10 +24,6 @@ export default defineComponent ({
     updateLocalWorkout(workout: Workout) {
       this.$emit('updated', workout);
     }
-  },
-  data(props) {
-    const { userWorkouts :  workouts} = toRefs(props)
-    return { workouts}
   }
 });
 </script>

@@ -29,7 +29,6 @@ const updateLocalWorkout = (workout: Workout) => {
 
   workouts = ref(workouts.value);
 }
-
 </script>
 
 <template>
