@@ -1,30 +1,28 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { ref} from 'vue';
 import PostList from '@/components/PostList.vue';
 import NewPost from '@/components/NewPost.vue';
 import { getSession } from '@/model/session';
+import { getPostsByUsers, type Post } from '@/model/posts';
 
 const session = getSession();
-const user = session.user;
-
-if (!user) {
-  throw new Error('User not found');
+const user = session?.user;
+if(!user) {
+  throw new Error('User not logged in');
 }
 
-export default defineComponent({
-  components: {
-    PostList,
-    NewPost
-  },
-  setup() {
-    return {
-      userIds: [user.id],
-      allIds: [user.id, ...user.friends]
-    };
-  },
-});
+var userPosts = ref(getPostsByUsers([user.id]));
+var friendPosts = ref(getPostsByUsers([user.id, ...user.friends]));
 
+const addPost = (post: Post) => {
+  userPosts.value.push(post);
+  friendPosts.value.push(post);
+
+  userPosts.value = getPostsByUsers([user.id]);
+  friendPosts.value = getPostsByUsers([user.id, ...user.friends]);
+}
 </script>
+
 <template>
   <div class="home-page">
     <section class="section">
@@ -39,14 +37,14 @@ export default defineComponent({
           <div class="column is-half-desktop is-half-tablet is-full-mobile" style="height: 100%;">
             <div class="custom-box">
               <h2 class="custom-subtitle">Your Feed</h2>
-              <PostList :userIds="allIds" />
+              <PostList :userPostsProp="friendPosts" :viewHeight="'90%'" />
             </div>
           </div>
           <div class="column is-half-desktop is-half-tablet is-full-mobile" style="height: 100%;">
             <div class="custom-box">
 
-              <NewPost />
-              <PostList :userIds="userIds" />
+              <NewPost @created="addPost"/>
+              <PostList :userPostsProp="userPosts" :viewHeight="'45%'"/>
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue';
 import { getSession } from '@/model/session';
 import WorkoutListSimple from '@/components/WorkoutListSimple.vue';
-import { addPost } from '@/model/posts';
+import { addPost, type Post } from '@/model/posts';
 
 const session = getSession();
 
@@ -19,16 +19,24 @@ export default defineComponent({
       this.workout = workoutId;
     },
     createPost() {
-      addPost({
+      this.postDate = (new Date(this.postDate))
+        .toLocaleDateString()
+        .split('/')
+        .map((part, index) => (index === 1 ? +part + 1 : part))
+        .join('/');
+      
+      const post = {
         name: this.postName,
         date: this.postDate,
         workout: this.workout,
         owner: this.user,
         id: ''
-      })
+      } as Post;
+      addPost(post);
+      this.$emit('created', post);
     }
   },
-  setup() {
+  data() {
     const user = session.user || { id: '' };
 
     return {

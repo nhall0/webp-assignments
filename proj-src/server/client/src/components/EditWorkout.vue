@@ -1,10 +1,9 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { type Workout, postNewWorkout } from '@/model/workouts';
+import { type Workout} from '@/model/workouts';
 import { type Exercise, getExerciseIndexByName } from '@/model/exercises';
 import PrivacyForm from './PrivacyForm.vue';
 import ExerciseList from './ExerciseList.vue';
-import { getSession } from '@/model/session';
 
 export default defineComponent({
   props:{
@@ -16,8 +15,6 @@ export default defineComponent({
   setup() {
     return {
       showModal: ref(false),
-      newWorkoutName: ref(''),
-      workouts: ref<Workout[]>([])
     };
   },
   components: {
@@ -30,15 +27,9 @@ export default defineComponent({
     },
     closeModal() {
       this.showModal = false;
-      this.newWorkoutName = '';
     },
     saveWorkout() {
-      const session = getSession();
-      if (!session.user?.id) {
-        throw new Error('User not found');
-      }
-
-      postNewWorkout(this.newWorkout, session.user.id);
+      this.$emit('updated', this.newWorkout);
       this.closeModal();
     },
     updatePrivacy(value: number) {
@@ -105,12 +96,6 @@ export default defineComponent({
         </footer>
       </div>
     </div>
-
-    <ul>
-      <li v-for="(workout, index) in workouts" :key="index" class="box">
-        {{ workout.name }} (Sets: {{ workout.sets }}, Reps: {{ workout.reps }}, Privacy: {{ workout.privacy }})
-      </li>
-    </ul>
   </div>
 </template>
 

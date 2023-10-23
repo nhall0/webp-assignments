@@ -15,7 +15,7 @@ export default defineComponent({
       this.$emit('selected', workoutId);
     }
   },
-  setup(props) {
+  data(props) {
     const workouts = ref<Workout[]>(getWorkoutsFromUser(props.user));
     const selectedWorkoutId = ref('');
 
@@ -39,7 +39,7 @@ export default defineComponent({
 .workout-list {
   display: flex;
   flex-direction: column;
-  max-height: 200px;
+  max-height: 150px;
   overflow-y: auto;
   gap: 10px;
   margin-top: 20px;

@@ -1,27 +1,39 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 
+import { ref } from 'vue';
 import NewGoalCron from '@/components/NewGoalCron.vue';
 import GoalsList from '@/components/GoalsList.vue';
 import GoalCalendar from '@/components/GoalCalendar.vue';
 import { getSession } from '@/model/session';
+import { postNewGoal, removeGoal, getGoalByIds, type Goal} from '@/model/goals';
 
+const session = getSession();
 
-export default defineComponent({
-  components: {
-    NewGoalCron,
-    GoalsList,
-    GoalCalendar
-  },
-  setup() {
-    const session = getSession().user;
-    if (!session) {
-      throw new Error('Session not found');
-    }
-    const user = session;
-    return { user: user };
-  }
-});
+const user = session?.user;
+
+if(!user) {
+  throw new Error('User not logged in');
+}
+
+var goals = ref(getGoalByIds(user.goals));
+
+const addGoal = (newGoal: Goal) => {
+  postNewGoal(newGoal, user.id);
+  goals.value.push(newGoal);
+}
+
+const removeLocalGoal = (goalId: string) => {
+  removeGoal(goalId, user.id);
+  goals.value = goals.value.filter(goal => goal.id !== goalId);
+}
+
+const updateLocalGoal = (updatedGoal: Goal) => {
+  postNewGoal(updatedGoal, user.id);
+  const index = goals.value.findIndex(goal => goal.id === updatedGoal.id);
+  goals.value[index] = updatedGoal;
+
+  goals = ref(goals.value);
+}
 
 </script>
 
@@ -35,19 +47,19 @@ export default defineComponent({
     
     <div class="side-content" style="z-index: 100;">
       <div class="field">
-        <NewGoalCron></NewGoalCron>
+        <NewGoalCron :user="user.id" @added="addGoal"></NewGoalCron>
       </div>
 
       <div class="field">
         <label class="label">Current Goals:</label>
-        <GoalsList :user-id="user?.id"></GoalsList>
+        <GoalsList :user-goals="goals" @removed="removeLocalGoal" @updated="updateLocalGoal"></GoalsList>
       </div>
     </div>
 
     <section class="section">
       <div class="container">
         <div class="field">
-          <GoalCalendar :user-id="user?.id"></GoalCalendar>
+          <GoalCalendar :user-goals="goals"></GoalCalendar>
         </div>
       </div>
     </section>
@@ -56,9 +68,10 @@ export default defineComponent({
 
 <style scoped>
 .side-content {
+  border-right: 20px solid #0084ff;
   position: fixed;
   top: 100px;
-  left: -200px;
+  left: -280px;
   width: 300px;
   height: 100%;
   background-color: #f5f5f5;
@@ -68,6 +81,7 @@ export default defineComponent({
 }
 
 .side-content:hover {
+  border-right: 10px solid #0084ff;
   left: 0; 
 }
 </style>

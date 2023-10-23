@@ -1,17 +1,16 @@
 <script lang="ts">
-import { ref } from 'vue';
-import { getWorkoutsFromUser, type Workout, removeWorkout} from '@/model/workouts';
+import { toRefs, defineComponent } from 'vue';
+import {type Workout} from '@/model/workouts';
 import Privacy from '@/components/Privacy.vue';
 import ExerciseList from '@/components/ExerciseList.vue';
 import EditWorkout from './EditWorkout.vue';
 
-export default {
+export default defineComponent ({
   props: {
-    user: {
-      type: String,
-      required: true,
+    workouts: {
+      type: Array as () => Workout[],
+      required: true
     },
-
   },
   components: {
     ExerciseList,
@@ -19,20 +18,18 @@ export default {
     EditWorkout
   },
   methods: {
-    addWorkout(workout: Workout) {
-      this.workouts.push(workout);
+    removeLocalWorkout(workoutId: string) {
+      this.$emit('removed', workoutId);
     },
-    removeWorkout(workoutId: string) {
-      removeWorkout(workoutId, this.user);
+    updateLocalWorkout(workout: Workout) {
+      this.$emit('updated', workout);
     }
   },
-  setup(props) {
-    const workouts = ref<Workout[]>(getWorkoutsFromUser(props.user));
-    return {
-      workouts,
-    };
-  },
-};
+  data(props) {
+    const { userWorkouts :  workouts} = toRefs(props)
+    return { workouts}
+  }
+});
 </script>
 
 <template>
@@ -51,10 +48,13 @@ export default {
               <p>
                 <Privacy :privacy="workout.privacy" />
               </p>
-              <EditWorkout :newWorkout="workout" />
-              <button class="button is-warning" @click="removeWorkout(workout.id)">Remove</button>
+              <p>
+                <EditWorkout :newWorkout="workout" @updated="updateLocalWorkout"/>
+              </p>
+              <p>
+                <button class="button is-warning" @click="removeLocalWorkout(workout.id)">Remove</button>
+              </p>
             </div>
-            
           </div>
         </div>
       </div>

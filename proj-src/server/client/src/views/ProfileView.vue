@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { getSession } from '@/model/session';
+import { getPostsByUsers } from '@/model/posts';
+import { getGoalByIds } from '@/model/goals';
 
 const user = getSession().user;
 if (!user) {
@@ -21,9 +23,21 @@ const changePassword = () => {
   console.log('Changing password...');
 };
 
+const posts = getPostsByUsers([user.id]);
+var lastWorkoutDate = '';
+if(posts.length > 0) {
+  const lastPost = posts[0];
+  if(lastPost.date) {
+    lastWorkoutDate = lastPost.date;
+  }
+}
+
+const goals = getGoalByIds(user.goals);
+
 const workoutStatistics = ref({
   total: user.workouts.length,
-  lastWorkoutDate: '2023-10-15'
+  lastWorkoutDate,
+  goalCount: goals.length
 });
 </script>
 
@@ -33,17 +47,15 @@ const workoutStatistics = ref({
       <div class="container">
         <h1 class="title has-text-success">Your Profile</h1>
 
-        <!-- Profile Information -->
         <div class="box profile-box">
           <h2 class="subtitle">Profile Information</h2>
           <div class="content">
             <p><strong>Name:</strong> {{ profile.name }}</p>
             <p><strong>Email:</strong> {{ profile.email }}</p>
-            <!-- Add more profile information as needed -->
           </div>
         </div>
 
-        <!-- Change Password Form -->
+
         <div class="box profile-box">
           <h2 class="subtitle">Change Password</h2>
           <form @submit.prevent="changePassword">
@@ -77,13 +89,12 @@ const workoutStatistics = ref({
           </form>
         </div>
 
-        <!-- Workout Statistics -->
         <div class="box profile-box">
           <h2 class="subtitle">Workout Statistics</h2>
           <div class="content">
             <p><strong>Total Workouts:</strong> {{ workoutStatistics.total }}</p>
             <p><strong>Last Workout Date:</strong> {{ workoutStatistics.lastWorkoutDate }}</p>
-            <!-- Add more workout statistics as needed -->
+            <p><strong>Goals:</strong> {{ workoutStatistics.goalCount }}</p>
           </div>
         </div>
 
@@ -93,7 +104,6 @@ const workoutStatistics = ref({
 </template>
 
 <style scoped>
-/* Additional styles for profile-box */
 .profile-box {
   border: 2px solid #00D1B2;
   border-radius: 10px;

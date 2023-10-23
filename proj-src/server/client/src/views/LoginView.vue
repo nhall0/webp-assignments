@@ -19,7 +19,6 @@ import Login from '../components/Login.vue'
 
 .column {
   background-color: #ffffff;
-  /* Primary color */
   color: rgb(0, 0, 0);
 }
 

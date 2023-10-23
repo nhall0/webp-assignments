@@ -18,9 +18,9 @@ export function postNewGoal(goal: Goal, userId: string) {
   if(goal.id == ''){
     const id = uuidv4();
     goal.id = id;
+    addGoal(userId, goal.id);
   }
   goals[goal.id] = goal;
-  addGoal(userId, goal.id);
 }
 
 export function removeGoal(id: string, userId: string) {
@@ -129,5 +129,21 @@ export function getOccurrenceFromCron(cron: string) {
   }
   else {
     return "Weekly";
+  }
+}
+
+export function getCalendarDaysFromCron(cron: string) {
+  var days = cron.split(" ")[3];
+  var calendarDays = [] as string[];
+
+  if(days != null){
+    calendarDays = days.split(",");
+  }
+
+  if(calendarDays[0] === "*") {
+    return [];
+  }
+  else {
+    return calendarDays;
   }
 }

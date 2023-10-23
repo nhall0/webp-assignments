@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { type Goal, getOccurrenceFromCron, getTimeFromCron, getWeekdaysFromCron, postNewGoal } from '@/model/goals';
-import { getSession } from '@/model/session';
+import { type Goal, getOccurrenceFromCron, getTimeFromCron, getWeekdaysFromCron } from '@/model/goals';
 import { getWorkoutById } from '@/model/workouts';
 import PrivacyForm from './PrivacyForm.vue';
 import WorkoutListSimple from './WorkoutListSimple.vue';
@@ -16,6 +15,7 @@ export default defineComponent({
   data() {
     return {
       showModal: ref(false),
+      user: this.newGoal.owner,
       name: this.newGoal.name,
       selectedTime: getTimeFromCron(this.newGoal.repetition),
       selectedOccurrence: getOccurrenceFromCron(this.newGoal.repetition),
@@ -40,23 +40,25 @@ export default defineComponent({
       this.showModal = false;
     },
     editGoal() {
-      postNewGoal(this.newGoal, this.user);
+      this.newGoal.name = this.name;
+      this.newGoal.workout = this.workout;
+      
+      var hour = this.selectedTime.split(':')[0];
+      if(this.selectedOccurrence === 'daily') {
+        this.newGoal.repetition = `0 ${hour} * * *`;
+      }
+      else if(this.selectedOccurrence === 'weekly'){
+        this.newGoal.repetition = `0 ${hour} * * ${this.selectedWeekdays.join(',')}`;
+      }
+
+      this.$emit('updated', this.newGoal);
       this.closeFunctionModal();
     },
     updatePrivacy(privacy: number) {
+      this.newGoal.privacy = privacy;
       return privacy;
     }
-  },
-  setup() {
-    const privacy = ref(0);
-    const session = getSession();
-
-    if (!session.user?.id) {
-      throw new Error('User not found');
-    }
-
-    return { privacy, user: session.user.id };
-  },
+  }
 });
 </script>
 

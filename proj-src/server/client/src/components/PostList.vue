@@ -1,32 +1,36 @@
 <script lang="ts">
-import { ref, defineComponent } from 'vue';
-import { getPostsByUsers, type Post } from '@/model/posts';
+import { toRefs, defineComponent } from 'vue';
+import { type Post } from '@/model/posts';
 import { getUserById } from '@/model/users';
 import { getWorkoutById } from '@/model/workouts';
 
 export default defineComponent({
   props: {
-    userIds: {
-      type: Array as () => string[],
-      required: true,
+    userPostsProp: {
+      type: Array as () => Post[],
+      required: true
+    },
+    viewHeight: {
+      type: String,
+      required: true
     }
   },
   methods: {
-    getPosts() {
-      var posts = ref<Post[]>(getPostsByUsers(this.userIds));
-      return posts.value;
-    },
     getUserById,
     getWorkoutById
   },
+  data(props) {
+    const { userPostsProp : userPosts } = toRefs(props)
+    return { userPosts}
+  }
 });
 </script>
 
 <template>
-  <div class="post-list">
+  <div :style="{ height: viewHeight }" class="post-list">
     <h2 class="subtitle"><i class="fas fa-clipboard-list"></i> Posts</h2>
     <ul>
-      <li v-for="post in getPosts()" :key="post.id" class="post-item">
+      <li v-for="post in userPosts" :key="post.id" class="post-item">
         <div class="post-info">
           <div class="post-title">
             <i class="fas fa-user"></i>
@@ -53,6 +57,8 @@ export default defineComponent({
 .post-list {
   padding: 20px;
   min-width: 200;
+  overflow-y: scroll;
+  height: 50%;
 }
 
 .post-item {

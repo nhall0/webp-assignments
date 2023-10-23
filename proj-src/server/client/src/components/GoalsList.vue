@@ -1,40 +1,17 @@
 <script lang="ts">
-import { defineComponent, computed} from 'vue';
-import { getGoalByIds, getNextDateFromCron, removeGoal } from '@/model/goals';
-import { getUserById } from '@/model/users';
+import { defineComponent } from 'vue';
+import { getNextDateFromCron, removeGoal, type Goal } from '@/model/goals';
 import { getWorkoutById } from '@/model/workouts';
-import { getSession } from '@/model/session';
 import EditGoalCron from './EditGoalCron.vue';
 
 import Privacy from './Privacy.vue';
 
-function getLatestGoals() {
-  const session = getSession();
-  const userId = session.user?.id;
-  if(!userId) {
-    throw new Error('User not logged in');
-  }
-  const user = getUserById(userId);
-  if(!user) {
-    throw new Error('User not found');
-  }
-  return getGoalByIds(user.goals);
-}
-
 export default defineComponent({
-  data() {
-    const session = getSession();
-    const userGoals = computed(() => getLatestGoals())
-    return {
-      userGoals,
-      userId: session.user?.id
-    };
-  },
   props: {
-    userId: {
-      type: String,
-      required: true
-    }
+    userGoals: {
+      type: Array as () => Array<Goal>,
+      required: true,
+    },
   },
   components: {
     Privacy,
@@ -42,7 +19,10 @@ export default defineComponent({
   },
   methods: {
     removeGoal(goalId: string) {
-      removeGoal(goalId, this.userId);
+      this.$emit('removed', goalId);
+    },
+    updateGoal(goal: Goal) {
+      this.$emit('updated', goal);
     },
     getWorkoutName(workoutId: string) {
       const workout = getWorkoutById(workoutId);
@@ -66,9 +46,13 @@ export default defineComponent({
           <p class="goal-detail">
             <Privacy :privacy="goal.privacy" />
           </p>
-          <button class="button is-warning" @click="removeGoal(goal.id)">Remove</button>
+          <p class="goal-detail">
+            <button class="button is-warning" @click="removeGoal(goal.id)">Remove</button>
+          </p>
+          <p class="goal-detail">
+            <EditGoalCron :new-goal="goal" @updated="updateGoal"/>
+          </p>
         </div>
-        <EditGoalCron :new-goal="goal" />
       </li>
     </ul>
   </div>
@@ -85,8 +69,8 @@ export default defineComponent({
 }
 
 .goal-list {
-  list-style-type: none;
-  padding: 0;
+  overflow-y: scroll;
+  height: 70vh;
 }
 
 .goal-item {

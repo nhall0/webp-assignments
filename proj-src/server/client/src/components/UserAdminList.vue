@@ -20,6 +20,7 @@ export default defineComponent({
         <th>Email</th>
         <th>Role</th>
         <th>Edit</th>
+        <th>Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -29,6 +30,7 @@ export default defineComponent({
         <td v-if="user.role == 1">Admin</td>
         <td v-if="user.role == 0">User</td>
         <td><button class="button is-small">Edit</button></td>
+        <td><button class="button is-small">Delete</button></td>
         </tr>
     </tbody>
     </table>

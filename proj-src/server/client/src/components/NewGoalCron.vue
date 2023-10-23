@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { type Goal, postNewGoal} from '@/model/goals';
-import { getSession } from '@/model/session';
+import { type Goal } from '@/model/goals';
 import { getWorkoutById } from '@/model/workouts';
 import PrivacyForm from './PrivacyForm.vue';
 import WorkoutListSimple from './WorkoutListSimple.vue';
@@ -23,6 +22,12 @@ export default defineComponent({
       selectedWeekdays: [],
       daysOfWeek: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
     };
+  },
+  props: {
+    user: {
+      type: String,
+      required: true
+    }
   },
   components: {
     PrivacyForm,
@@ -47,24 +52,14 @@ export default defineComponent({
       else if(this.selectedOccurrence === 'weekly'){
         this.newGoal.repetition = `0 ${hour} * * ${this.selectedWeekdays.join(',')}`;
       }
-      this.newGoal.owner = this.user;
-      postNewGoal(this.newGoal, this.user);
+      this.$emit('added', this.newGoal)
       this.closeFunctionModal();
     },
     updatePrivacy(privacy: number) {
       this.newGoal.privacy = privacy;
       return privacy;
     }
-  },
-  setup() {
-    const session = getSession();
-
-    if (!session.user?.id) {
-      throw new Error('User not found');
-    }
-
-    return {user: session.user.id };
-  },
+  }
 });
 </script>
 

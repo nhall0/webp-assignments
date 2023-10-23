@@ -27,9 +27,9 @@ export function postNewWorkout(workout: Workout, userId: string) {
   if(workout.id == ''){
     const id = uuidv4();
     workout.id = id;
+    addWorkout(userId, workout.id);
   }
   workouts[workout.id] = workout;
-  addWorkout(userId, workout.id);
 }
 
 export function getWorkouts() {
