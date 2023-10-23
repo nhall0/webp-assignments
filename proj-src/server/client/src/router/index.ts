@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLocationNormalized  } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import { getSession } from '../model/session';
 
 const session = getSession();
@@ -10,13 +10,13 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('../views/HomeView.vue'),
-      beforeEnter: requireLogin,
+      meta: { requiresAuth: true }
     },
     {
       path: '/admin',
       name: 'admin',
       component: () => import('../views/AdminView.vue'),
-      beforeEnter: requireLogin,
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -27,44 +27,41 @@ const router = createRouter({
       path: '/friends',
       name: 'friends',
       component: () => import('../views/FriendsView.vue'),
-      beforeEnter: requireLogin,
+      meta: { requiresAuth: true }
     },
     {
       path: '/goals',
       name: 'goals',
       component: () => import('../views/GoalsView.vue'),
-      beforeEnter: requireLogin,
+      meta: { requiresAuth: true }
     },
     {
       path: '/profile',
       name: 'profile',
       component: () => import('../views/ProfileView.vue'),
-      beforeEnter: requireLogin,
+      meta: { requiresAuth: true }
     },
     {
       path: '/settings',
       name: 'settings',
       component: () => import('../views/SettingsView.vue'),
-      beforeEnter: requireLogin,
+      meta: { requiresAuth: true }
     },
     {
       path: '/workouts',
       name: 'workouts',
       component: () => import('../views/WorkoutsView.vue'),
-      beforeEnter: requireLogin,
+      meta: { requiresAuth: true }
     }
   ]
 });
 
-function requireLogin(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
-  
-  const session = getSession();
-  if(!session.user){
-    session.redirectUrl = to.fullPath;
-    next('/login');
-  }else{
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !session.user) {
+    next({ name: 'login' });
+  } else {
     next();
   }
-}
+});
 
 export default router;

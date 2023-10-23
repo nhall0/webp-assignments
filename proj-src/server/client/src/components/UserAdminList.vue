@@ -13,6 +13,7 @@ export default defineComponent({
 <template>
 <div class="box">
     <h2 class="subtitle">User Management</h2>
+    <td><button class="button is-small">Create New User</button></td>
     <table class="table is-fullwidth">
     <thead>
         <tr>
