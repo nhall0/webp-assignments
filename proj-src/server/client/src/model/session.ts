@@ -1,22 +1,32 @@
 import { reactive } from "vue";
-import { type Router } from 'vue-router';
-import { getUsers, type User } from '@/model/users';
+import { useRouter } from "vue-router"
+import { type User, getUserByUsername} from "./users";
 
 const session = reactive({
   user: null as User | null,
+  redirectUrl: null as string | null,
 })
 
-export function getSession() {
+export function getSession(){
   return session;
 }
 
-export function login(username: string, password: string, router: Router) {
-  const user = getUsers().find(user => user.username === username && user.password === password);
+export function useLogin(){
+  const router = useRouter();
 
-  if (user) {
-    session.user = user;
-    router.push({ name: 'about' });
-  } else {
-    console.error('Invalid username or password.');
+  return {
+    login(username: string, password: string): User | null {
+      const user = getUserByUsername(username);
+      if(user && user.password === password){
+        session.user = user;
+        router.push(session.redirectUrl || "/");
+        return user;
+      }
+      return null;
+    },
+    logout(){
+      session.user = null;
+      router.push("/login");
+    }
   }
 }

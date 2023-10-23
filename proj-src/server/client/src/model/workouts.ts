@@ -1,7 +1,7 @@
 import workoutData from "@/data/workouts.json";
 import { getUserById } from "@/model/users";
 import { v4 as uuidv4 } from 'uuid';
-import { addWorkout } from "@/model/users";
+import { addWorkout, deleteWorkout } from "@/model/users";
 
 export interface Workout {
   id: string;
@@ -16,6 +16,11 @@ export let workouts: { [key: string]: Workout } = workoutData as unknown as { [k
 
 export function getWorkoutById(id: string) {
   return getWorkouts().find(workout => workout.id === id);
+}
+
+export function removeWorkout(id: string, userId: string) {
+  deleteWorkout(id, userId);
+  delete workouts[id];
 }
 
 export function postNewWorkout(workout: Workout, userId: string) {

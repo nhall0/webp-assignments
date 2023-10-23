@@ -19,6 +19,21 @@ export function postNewUser(user: User) {
     users[user.id] = user;
 }
 
+export function getUserByUsername(username: string) {
+    return getUsers().find(user => user.username === username);
+}
+
+export function deleteGoal(id: string, userId: string) {
+    const user = getUserById(userId);
+
+    if(user == undefined) {
+        return;
+    }
+
+    const index = user.goals.indexOf(id);
+    delete user.goals[index];
+}
+
 export function addGoal(userId: string, goalId: string) {
     const user = getUserById(userId);
   
@@ -31,6 +46,17 @@ export function addGoal(userId: string, goalId: string) {
     }
   
     users[userId].goals = user.goals;
+}
+
+export function deleteWorkout(id: string, userId: string) {
+    const user = getUserById(userId);
+
+    if(user == undefined) {
+        return;
+    }
+
+    const index = user.workouts.indexOf(id);
+    delete user.workouts[index];
 }
 
 export function addWorkout(userId: string, workoutId: string) {

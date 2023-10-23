@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLocationNormalized  } from 'vue-router';
 import { getSession } from '../model/session';
 
 const session = getSession();
@@ -10,13 +10,13 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('../views/HomeView.vue'),
-      meta: { requiresAuth: true }
+      beforeEnter: requireLogin,
     },
     {
       path: '/admin',
       name: 'admin',
       component: () => import('../views/AdminView.vue'),
-      meta: { requiresAuth: true }
+      beforeEnter: requireLogin,
     },
     {
       path: '/login',
@@ -27,41 +27,44 @@ const router = createRouter({
       path: '/friends',
       name: 'friends',
       component: () => import('../views/FriendsView.vue'),
-      meta: { requiresAuth: true }
+      beforeEnter: requireLogin,
     },
     {
       path: '/goals',
       name: 'goals',
       component: () => import('../views/GoalsView.vue'),
-      meta: { requiresAuth: true }
+      beforeEnter: requireLogin,
     },
     {
       path: '/profile',
       name: 'profile',
       component: () => import('../views/ProfileView.vue'),
-      meta: { requiresAuth: true }
+      beforeEnter: requireLogin,
     },
     {
       path: '/settings',
       name: 'settings',
       component: () => import('../views/SettingsView.vue'),
-      meta: { requiresAuth: true }
+      beforeEnter: requireLogin,
     },
     {
       path: '/workouts',
       name: 'workouts',
       component: () => import('../views/WorkoutsView.vue'),
-      meta: { requiresAuth: true }
+      beforeEnter: requireLogin,
     }
   ]
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !session.user) {
-    next({ name: 'login' });
-  } else {
+function requireLogin(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+  
+  const session = getSession();
+  if(!session.user){
+    session.redirectUrl = to.fullPath;
+    next('/login');
+  }else{
     next();
   }
-});
+}
 
 export default router;

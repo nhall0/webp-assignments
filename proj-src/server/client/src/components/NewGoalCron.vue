@@ -41,7 +41,12 @@ export default defineComponent({
     },
     makeNewGoal() {
       var hour = this.selectedTime.split(':')[0];
-      this.newGoal.repetition = `0 0 ${hour} ? * ${this.selectedWeekdays.join(',')} *`;
+      if(this.selectedOccurrence === 'daily') {
+        this.newGoal.repetition = `0 ${hour} * * *`;
+      }
+      else if(this.selectedOccurrence === 'weekly'){
+        this.newGoal.repetition = `0 ${hour} * * ${this.selectedWeekdays.join(',')}`;
+      }
       this.newGoal.owner = this.user;
       postNewGoal(this.newGoal, this.user);
       this.closeFunctionModal();

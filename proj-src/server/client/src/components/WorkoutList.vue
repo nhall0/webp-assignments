@@ -1,6 +1,6 @@
 <script lang="ts">
 import { ref } from 'vue';
-import { getWorkoutsFromUser, type Workout } from '@/model/workouts';
+import { getWorkoutsFromUser, type Workout, removeWorkout} from '@/model/workouts';
 import Privacy from '@/components/Privacy.vue';
 import ExerciseList from '@/components/ExerciseList.vue';
 import EditWorkout from './EditWorkout.vue';
@@ -22,6 +22,9 @@ export default {
     addWorkout(workout: Workout) {
       this.workouts.push(workout);
     },
+    removeWorkout(workoutId: string) {
+      removeWorkout(workoutId, this.user);
+    }
   },
   setup(props) {
     const workouts = ref<Workout[]>(getWorkoutsFromUser(props.user));
@@ -49,6 +52,7 @@ export default {
                 <Privacy :privacy="workout.privacy" />
               </p>
               <EditWorkout :newWorkout="workout" />
+              <button class="button is-warning" @click="removeWorkout(workout.id)">Remove</button>
             </div>
             
           </div>

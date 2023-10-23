@@ -1,6 +1,10 @@
 <script lang="ts">
 import { ref } from 'vue';
-import { login } from '../model/session'
+import { RouterLink } from 'vue-router';
+
+import { useLogin } from '@/model/session';
+const { login, logout } = useLogin()
+
 
 export default {
   setup() {
@@ -69,7 +73,7 @@ function signup() {
               <div class="field">
                 <div class="control">
                   <RouterLink to='/' class="button is-primary is-fullwidth"
-                    @click.prevent="login(loginUser, loginPassword, $router)">Login</RouterLink>
+                    @click.prevent="login(loginUser, loginPassword)">Login</RouterLink>
                 </div>
               </div>
             </form>

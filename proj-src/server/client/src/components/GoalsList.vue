@@ -1,13 +1,35 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { getGoalByIds, getNextDateFromCron } from '@/model/goals';
+import { defineComponent, computed} from 'vue';
+import { getGoalByIds, getNextDateFromCron, removeGoal } from '@/model/goals';
 import { getUserById } from '@/model/users';
 import { getWorkoutById } from '@/model/workouts';
+import { getSession } from '@/model/session';
 import EditGoalCron from './EditGoalCron.vue';
 
 import Privacy from './Privacy.vue';
 
+function getLatestGoals() {
+  const session = getSession();
+  const userId = session.user?.id;
+  if(!userId) {
+    throw new Error('User not logged in');
+  }
+  const user = getUserById(userId);
+  if(!user) {
+    throw new Error('User not found');
+  }
+  return getGoalByIds(user.goals);
+}
+
 export default defineComponent({
+  data() {
+    const session = getSession();
+    const userGoals = computed(() => getLatestGoals())
+    return {
+      userGoals,
+      userId: session.user?.id
+    };
+  },
   props: {
     userId: {
       type: String,
@@ -19,6 +41,9 @@ export default defineComponent({
     EditGoalCron
   },
   methods: {
+    removeGoal(goalId: string) {
+      removeGoal(goalId, this.userId);
+    },
     getWorkoutName(workoutId: string) {
       const workout = getWorkoutById(workoutId);
       return workout?.name;
@@ -27,26 +52,13 @@ export default defineComponent({
       return getNextDateFromCron(cron);
     }
   },
-  computed: {
-    userGoals() {
-      const user = getUserById(this.userId);
-      if (!user) {
-        throw new Error(`User with id ${this.userId} not found`);
-      }
-      const goals = getGoalByIds(user.goals);
-      if (!goals) {
-        throw new Error(`Goals for user with id ${this.userId} not found`);
-      }
-      return goals; 
-    }
-    }
 });
 </script>
 
 <template>
   <div>
     <ul class="goal-list">
-      <li v-for="(goal) in userGoals" :key="goal.name" class="goal-item box">
+      <li v-for="goal in userGoals" :key="goal.id" class="goal-item box">
         <div class="goal-info">
           <h3 class="goal-name is-size-4">{{ goal.name }}</h3>
           <p class="goal-detail"><strong>Next Date:</strong> {{ getNextDateFromCron(goal.repetition) }}</p>
@@ -54,6 +66,7 @@ export default defineComponent({
           <p class="goal-detail">
             <Privacy :privacy="goal.privacy" />
           </p>
+          <button class="button is-warning" @click="removeGoal(goal.id)">Remove</button>
         </div>
         <EditGoalCron :new-goal="goal" />
       </li>

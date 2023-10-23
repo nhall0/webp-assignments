@@ -1,7 +1,7 @@
 import goalsData from '@/data/goals.json';
 import * as cronParser from 'cron-parser';
 import { v4 as uuidv4 } from 'uuid';
-import { addGoal } from './users';
+import { addGoal, deleteGoal } from './users';
 
 export let goals: { [key: string]: Goal } = goalsData as unknown as { [key: string]: Goal };
 
@@ -21,6 +21,11 @@ export function postNewGoal(goal: Goal, userId: string) {
   }
   goals[goal.id] = goal;
   addGoal(userId, goal.id);
+}
+
+export function removeGoal(id: string, userId: string) {
+  deleteGoal(id, userId);
+  delete goals[id];
 }
 
 export function getGoalById(id: string) {

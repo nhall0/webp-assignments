@@ -55,7 +55,7 @@ export default defineComponent({
         this.newWorkout.exercises.splice(index, 1);
       }
     }
-  },
+  }
 });
 </script>
 
@@ -109,7 +109,7 @@ export default defineComponent({
     </div>
 
     <ul>
-      <li v-for="(workout, index) in workouts" :key="index" class="box">
+      <li v-for="workout in workouts" :key="workout.id" class="box">
         {{ workout.name }} (Sets: {{ workout.sets }}, Reps: {{ workout.reps }}, Privacy: {{ workout.privacy }})
       </li>
     </ul>
