@@ -1,0 +1,38 @@
+{
+    "a750fd6e-18b1-411a-80db-af03fafa68be":{
+        "name":"My Chest Day",
+        "exercises":[
+            0,3,5
+        ],
+        "sets":9,
+        "reps":8,
+        "privacy":0
+    },
+    "a750fd6e-18b1-411a-80db-af03fafa68b2":{
+        "name":"My Leg Day",
+        "exercises":[
+            6,10
+        ],
+        "sets":2,
+        "reps":20,
+        "privacy":2
+    },
+    "ebbc14e1-0060-4acc-9ab8-6c6647c0653c":{
+        "name":"Test Workout",
+        "exercises":[
+            0,3,5
+        ],
+        "sets":9,
+        "reps":8,
+        "privacy":1
+    },
+    "1d392157-54f7-4fd6-931c-26c5f324f557":{
+        "name":"My Workout",
+        "exercises":[
+            0,1,2,6
+        ],
+        "sets":11,
+        "reps":20,
+        "privacy":2
+    }
+}
