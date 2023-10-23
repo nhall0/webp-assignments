@@ -19,7 +19,7 @@ export default defineComponent({
     getUserById,
     getWorkoutById
   },
-  data(props) {
+  setup(props) {
     const { userPostsProp : userPosts } = toRefs(props)
     return { userPosts}
   }

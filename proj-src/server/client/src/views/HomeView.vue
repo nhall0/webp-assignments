@@ -24,6 +24,7 @@ const addPost = (post: Post) => {
 </script>
 
 <template>
+  TEST
   <div class="home-page">
     <section class="section">
       <div class="container">
