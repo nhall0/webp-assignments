@@ -21,12 +21,12 @@ router.get('/', (req, res, next) => {
 }
 ) 
 .post('/', (req, res, next) => {
-    
+        const user = req.user;
+        req.body.user_id = user.id;
         add(req.body).then((workout) => {
             res.send(workout);
         }
         ).catch(next)
-    
     }
 ) 
 .patch('/:id', (req, res, next) => {

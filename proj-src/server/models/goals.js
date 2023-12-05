@@ -40,6 +40,11 @@ async function getByIds(ids) {
   return col.find({ _id: { $in: ids.map(id => ObjectId(id)) } }).toArray();
 }
 
+async function getByUserId(userId) {
+  const col = await getCollection();
+  return col.find({ user_id: userId }).toArray();
+}
+
 async function add(goal) {
   const col = await getCollection();
   return col.insertOne(goal);
@@ -56,5 +61,5 @@ async function remove(id) {
 }
 
 module.exports = {
-  getAll, get, getCollection, COLLECTION_NAME, getByIds, add, update, remove
+  getAll, get, getCollection, COLLECTION_NAME, getByIds, add, update, remove, getByUserId
 };
