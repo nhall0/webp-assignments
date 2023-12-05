@@ -1,5 +1,10 @@
 const { ObjectId, connect } = require('./mongo');
 
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+
 // @ts-check
 
 /**
@@ -75,39 +80,37 @@ async function create(values) {
  * @returns {User} The created user.
  */
 async function register(values) {
-  //Check if user already exists
-  const item = data.users.find(x => x.email === values.email);
-  if(item) {
-    throw new Error('User already exists');
+  const col = await getCollection();
+
+  if(await col.findOne({ email: values.email })) {
+    throw new Error('Email already exists');
   }
 
-  //Make sure all fields are filled
-  if(!values.username || !values.password || !values.email || !values.firstName || !values.lastName) {
-    throw new Error('Please fill out all fields');
+  if(values.password <= 0) {
+    throw new Error('Password is too short');
   }
 
-  //Make sure password is at least 8 characters
-  if(values.password.length < 8) {
-    throw new Error('Password must be at least 8 characters');
-  }
-
-  //Make sure password contains at least one number
-  if(!/\d/.test(values.password)) {
-    throw new Error('Password must contain at least one number');
-  }
-
-  const newUser = await create(values);
-  return newUser
+  const newItem = {
+    ...values,
+  };
+  await col.insertOne(newItem);
+  return newItem;
 }
 
 /**
- * @param {string} email
+ * @param {string} username
  * @param {string} password
- * @returns {User} The created user.
+ * @returns { Promise< { user: User, token: string}> } The created user.
  */
-function login(email, password) {
+async function login(username, password) {
+  const col = await getCollection();
 
-  const item = data.users.find(x => x.email === email);
+  if(!username || !password) {
+    throw new Error('Missing email or password');
+  }
+  
+  const item = await col.findOne({ username: username })
+
   if(!item) {
     throw new Error('User not found');
   }
@@ -116,37 +119,63 @@ function login(email, password) {
     throw new Error('Wrong password');
   }
 
-  return item;
+  const user = { ...item, password: undefined, admin: true};
+  const token = await generateJWT(user);
+  return { user, token };
 }
 
 /**
  * @param {User} newValues - The user's new data.
  * @returns {User} The updated user.
  */
-function update(newValues) {
-  const index = data.users.findIndex(p => p.id === newValues.id);
-  if(index === -1) {
-    throw new Error('User not found');
-  }
-  data.users[index] = {
-    ...data.users[index],
+async function update(newValues) {
+  const col = await getCollection();
+  const newItem = {
     ...newValues,
   };
-  return data.users[index];
+  await col.updateOne({ _id: ObjectId(newValues.id) }, { $set: newItem });
+  return newItem;
 }
 
 /**
  * @param {number} id - The user's ID.
  */
-function remove(id) {
-  const index = data.users.findIndex(x => x.id === id);
-  if(index === -1) {
-    throw new Error('User not found');
-  }
-  data.users.splice(index, 1);
+async function remove(id) {
+  const col = await getCollection();
+  await col.deleteOne({ _id: ObjectId(id) });
+}
+
+function generateJWT(user) {
+  return new Promise((resolve, reject) => {
+    jwt.sign(user, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } , (err, token) => {
+      if(err) {
+        reject(err);
+      } else {
+        resolve(token);
+      }
+    });
+  })
+}
+
+function verifyJWT(token) {
+  return new Promise((resolve, reject) => {
+
+    //CATCH ERROR IF TOKEN IS UNDEFINED
+    if(!token) {
+      reject(new Error('Token is undefined'));
+    }
+    
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if(err) {
+        reject(err);
+      } else {
+        resolve(decoded);
+      }
+    });
+  })
 }
 
 
 module.exports = {
-  getAll, get, search, create, update, remove, login, register
+  getAll, get, search, create, update, remove, login, register, generateJWT, verifyJWT
 };

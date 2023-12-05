@@ -3,27 +3,36 @@
 const path = require('path')
 const express = require('express');
 require('dotenv').config();
-const productController = require('./controllers/products');
+
 const userController = require('./controllers/users');
+const exerciseController = require('./controllers/exercises');
+const workoutController = require('./controllers/workouts');
+const goalController = require('./controllers/goals');
+
+const { parseAuthorizationToken, requireUser } = require('./middleware/authorization');
 const app = express();
 
 const PORT = process.env.PORT ?? 3000;
 
-console.log(`The best class at SUNY New Paltz is ${process.env.BEST_CLASS}`);
-
 app
-    .use('/', express.static(path.join( __dirname, '../client/') ) )
-    .use(express.json())
+    .use('/', express.static(path.join( __dirname, '../client/dist/') ) )
+    .use(express.json()) // APPLICATION / JSON ONLY
 
     // CORS
     .use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', '*');
         res.header('Access-Control-Allow-Headers', '*');
+        if(req.method === 'OPTIONS') {
+            return res.send(200);
+        }
         next();
     })
 
-    .use('/api/v1/products', productController)
+    .use(parseAuthorizationToken)
+    .use('/api/v1/exercises', requireUser(), exerciseController)
+    .use('/api/v1/workouts', requireUser(), workoutController)
+    .use('/api/v1/goals', requireUser(), goalController)
     .use('/api/v1/users', userController)
 
     .get('*', (req, res) => {
@@ -37,8 +46,6 @@ app
             .status(err?.status || 500)
             .json({ message: err?.message || err });
     })
-
-
 
 console.log('1: Trying to start server...');
 

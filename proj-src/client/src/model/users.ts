@@ -81,6 +81,22 @@ export function getFriendsByUser(user: User) {
     return getUsers().filter(u => user.friends.includes(u.id));
 }
 
+export function makeUser(username: string, email: string, password: string) {
+    const user: User = {
+        id: "",
+        username: username,
+        password: password,
+        email: email,
+        firstName: "",
+        lastName: "",
+        role: 0,
+        workouts: [],
+        friends: [],
+        goals: []
+    }
+    users[user.id] = user;
+}
+
 export function getUsers() {
     return Object.keys(users).map((key) => {
       const user = users[key];

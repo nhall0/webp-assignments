@@ -1,6 +1,18 @@
 <script lang="ts">
 import { ref } from 'vue';
-import { login } from '../model/session'
+import { useLogin, getSession } from '../model/session'
+import { makeUser } from '../model/users'
+
+const session = getSession()
+const { login, logout } = useLogin()
+
+const doLogin = (username:string, password:string) => {
+  login(username, password)
+}
+
+const doLogout = () => {
+  logout();
+}
 
 export default {
   setup() {
@@ -12,8 +24,9 @@ export default {
       signupEmail,
       signupPassword,
       changeTab,
-      login,
-      signup
+      doLogin,
+      doLogout,
+      makeUser
     }
   }
 }
@@ -27,10 +40,6 @@ var signupPassword = ref("");
 
 function changeTab(tab: string) {
   activeTab.value = tab;
-}
-
-function signup() {
-  console.log("Signup");
 }
 
 </script>
@@ -69,7 +78,7 @@ function signup() {
               <div class="field">
                 <div class="control">
                   <RouterLink to='/' class="button is-primary is-fullwidth"
-                    @click.prevent="login(loginUser, loginPassword, $router)">Login</RouterLink>
+                    @click.prevent="doLogin(loginUser,loginPassword)">Login</RouterLink>
                 </div>
               </div>
             </form>
@@ -97,7 +106,7 @@ function signup() {
               </div>
               <div class="field">
                 <div class="control">
-                  <button class="button is-success is-fullwidth" @click.prevent="signup">Sign Up</button>
+                  <button class="button is-success is-fullwidth" @click.prevent="makeUser(signupName, signupEmail, signupPassword)">Sign Up</button>
                 </div>
               </div>
             </form>

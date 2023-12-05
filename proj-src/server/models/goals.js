@@ -35,6 +35,26 @@ async function get(id) {
   return col.findOne({ _id: ObjectId(id) });
 }
 
+async function getByIds(ids) {
+  const col = await getCollection();
+  return col.find({ _id: { $in: ids.map(id => ObjectId(id)) } }).toArray();
+}
+
+async function add(goal) {
+  const col = await getCollection();
+  return col.insertOne(goal);
+}
+
+async function update(id, goal) {
+  const col = await getCollection();
+  return col.updateOne({ _id: ObjectId(id) }, { $set: goal });
+}
+
+async function remove(id) {
+  const col = await getCollection();
+  return col.deleteOne({ _id: ObjectId(id) });
+}
+
 module.exports = {
-  getAll, get, getCollection, COLLECTION_NAME
+  getAll, get, getCollection, COLLECTION_NAME, getByIds, add, update, remove
 };

@@ -20,13 +20,15 @@ async function getCollection() {
 }
 
 /**
- * @returns {Promise<Exercise[]>} An array of products.
+ * @returns {Promise<Exercise[]>}
  */
 async function getAll() {
   const col = await getCollection();
-  return col.find({}).toArray();
-}
 
+  // PRINT OUT THE LIST OF EXERCISES
+  
+  return await col.find({}).toArray();
+}
 
 /**
  * @param {number} id - Index id.
@@ -34,10 +36,16 @@ async function getAll() {
 
 async function get(id) {
   const col = await getCollection();
-  return col.findOne({ _id: ObjectId(id) });
+  id = parseInt(id)
+  return await col.findOne({ id: id});
+}
+
+async function getByName(name) {
+  const col = await getCollection();
+  return col.findOne({ name: name });
 }
 
 module.exports = {
-  getAll, get, getCollection, COLLECTION_NAME
+  getAll, get, getCollection, COLLECTION_NAME, getByName
 };
 
