@@ -22,7 +22,7 @@ router.get('/', (req, res, next) => {
 ) 
 .post('/', (req, res, next) => {
         const user = req.user;
-        req.body.user_id = user.id;
+        req.body.user_id = user._id;
         add(req.body).then((workout) => {
             res.send(workout);
         }

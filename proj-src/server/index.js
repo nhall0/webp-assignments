@@ -8,6 +8,7 @@ const userController = require('./controllers/users');
 const exerciseController = require('./controllers/exercises');
 const workoutController = require('./controllers/workouts');
 const goalController = require('./controllers/goals');
+const postController = require('./controllers/posts');
 
 const { parseAuthorizationToken, requireUser } = require('./middleware/authorization');
 const app = express();
@@ -33,6 +34,7 @@ app
     .use('/api/v1/exercises', requireUser(), exerciseController)
     .use('/api/v1/workouts', requireUser(), workoutController)
     .use('/api/v1/goals', requireUser(), goalController)
+    .use('/api/v1/posts', requireUser(), postController)
     .use('/api/v1/users', userController)
 
     .get('*', (req, res) => {
