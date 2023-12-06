@@ -4,15 +4,15 @@
 const { ObjectId, connect } = require('./mongo');
 
 /**
- * @typedef {Object} Goal
+ * @typedef {Object} Post
  * @property {number} id - Goal ID.
  * @property {string} owner - Exercise owner.
- * @property {string} description - Exercise description.
- * @property {string} muscleGroup - Exercise muscle group.
- * @property {string} equipment - Exercise equipment.
+ * @property {string} name - Exercise description.
+ * @property {string} workout - Exercise muscle group.
+ * @property {string} date - Exercise equipment.
  */
 
-const COLLECTION_NAME = 'goals';
+const COLLECTION_NAME = 'posts';
 async function getCollection() {
   const db = await connect();
   return db.collection(COLLECTION_NAME);

@@ -1,5 +1,5 @@
 const express = require('express');
-const {getAll, get, getByIds, add, update, remove} = require('../models/goals');
+const {getAll, get, getByIds, add, update, remove, getByUserId} = require('../models/goals');
 
 const router = express.Router();
 
@@ -22,7 +22,17 @@ router.get('/', (req, res, next) => {
         }
         ).catch(next)
 })
+.get('/user/:id', (req, res, next) => {
+        getByUserId(req.params.id).then((goals) => {
+            res.send(goals);
+        }
+        ).catch(next)
+    }
+)
 .post('/', (req, res, next) => {
+        const user = req.user;
+        req.body.user_id = user._id;
+        
         add(req.body).then((goal) => {
             res.send(goal);
         }
