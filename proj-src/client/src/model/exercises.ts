@@ -2,6 +2,8 @@ import exercises from "@/data/exercises.json";
 
 import { getWorkoutById } from "./workouts";
 
+import {api} from "./session";
+
 export interface Exercise {
   name: string;
   description: string;

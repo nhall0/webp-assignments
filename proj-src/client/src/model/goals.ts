@@ -3,6 +3,8 @@ import * as cronParser from 'cron-parser';
 import { v4 as uuidv4 } from 'uuid';
 import { addGoal, deleteGoal } from './users';
 
+import {api} from "./session";
+
 export let goals: { [key: string]: Goal } = goalsData as unknown as { [key: string]: Goal };
 
 export interface Goal {

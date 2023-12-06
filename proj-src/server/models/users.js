@@ -41,7 +41,7 @@ async function getCollection() {
  */
 
 /**
- * @returns {User[]} An array of products.
+ * @returns {User[]} 
  */
 async function getAll() {
   const col = await getCollection();
@@ -50,7 +50,7 @@ async function getAll() {
 
 
 /**
- * @param {number} id - The product's ID.
+ * @param {number} id 
  */
 async function get(id) {
   const col = await getCollection();
@@ -137,6 +137,30 @@ async function update(newValues) {
   return newItem;
 }
 
+async function addFriend(id, friendId) {
+  const col = await getCollection();
+  const user = await col.findOne({ _id: ObjectId(id) });
+
+  if(user.friends.includes(friendId)) {
+    throw new Error('Friend already added');
+  }
+
+  await col.updateOne({ _id: ObjectId(id) }, { $push: { friends: friendId } });
+  return user;
+}
+
+async function removeFriend(id, friendId) {
+  const col = await getCollection();
+  const user = await col.findOne({ _id: ObjectId(id) });
+
+  if(!user.friends.includes(friendId)) {
+    throw new Error('Friend not found');
+  }
+
+  await col.updateOne({ _id: ObjectId(id) }, { $pull: { friends: friendId } });
+  return user;
+}
+
 /**
  * @param {number} id - The user's ID.
  */
@@ -177,5 +201,5 @@ function verifyJWT(token) {
 
 
 module.exports = {
-  getAll, get, search, create, update, remove, login, register, generateJWT, verifyJWT
+  getAll, get, search, create, update, remove, login, register, generateJWT, verifyJWT , addFriend, removeFriend
 };

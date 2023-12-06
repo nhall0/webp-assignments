@@ -3,7 +3,7 @@
 */
 
 const express = require('express');
-const { getAll, get, search, create, update, remove, login, register } = require('../models/users');
+const { getAll, get, search, create, update, remove, login, register, addFriend, removeFriend } = require('../models/users');
 const { requireUser } = require('../middleware/authorization');
 const { debug } = require('console');
 const router = express.Router();
@@ -35,6 +35,16 @@ router.get('/', requireUser(true), (req, res, next) => {
     const user = register(req.body);
     res.send(user);
 
+})
+.post('/add-friend', requireUser(), (req, res, next) => {
+    addFriend(req.body.user.id, req.body.friendId).then(user => {
+        res.send({"message": "Friend added", "code": 200});
+    }).catch(next);
+})
+.post('/remove-friend', requireUser(), (req, res, next) => {
+    removeFriend(req.body.user.id, req.body.friendId).then(user => {
+        res.send({"message": "Friend removed", "code": 200});
+    }).catch(next);
 })
 .post('/login', (req, res, next) => {
     login(req.body.email, req.body.password)

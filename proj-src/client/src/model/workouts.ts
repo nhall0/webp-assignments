@@ -3,6 +3,8 @@ import { getUserById } from "@/model/users";
 import { v4 as uuidv4 } from 'uuid';
 import { addWorkout, deleteWorkout } from "@/model/users";
 
+import {api} from "./session";
+
 export interface Workout {
   id: string;
   name: string;

@@ -1,5 +1,7 @@
 import userData from "@/data/users.json";
 
+import {api} from "./session";
+
 export interface User {
     id: string;
     username: string;
