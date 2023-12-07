@@ -110,13 +110,13 @@ export default {
               <div class="field">
                 <label class="label">First Name</label>
                 <div class="control">
-                  <input class="input" type="password" placeholder="Enter your first name." v-model="firstName">
+                  <input class="input" type="text" placeholder="Enter your first name." v-model="firstName">
                 </div>
               </div>
               <div class="field">
                 <label class="label">Last Name</label>
                 <div class="control">
-                  <input class="input" type="password" placeholder="Enter your last name." v-model="lastName">
+                  <input class="input" type="text" placeholder="Enter your last name." v-model="lastName">
                 </div>
               </div>
               <div class="field">
