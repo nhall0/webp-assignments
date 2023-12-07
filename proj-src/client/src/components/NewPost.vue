@@ -1,49 +1,53 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { getSession } from '@/model/session';
 import WorkoutListSimple from '@/components/WorkoutListSimple.vue';
-import { addPost, type Post } from '@/model/posts';
-
-const session = getSession();
-
-if (!session.user?.id) {
-  throw new Error('User not found');
-}
+import { type Post } from '@/model/posts';
 
 export default defineComponent({
   components: {
     WorkoutListSimple,
   },
-  methods: {
-    selectWorkout(workoutId: string) {
-      this.workout = workoutId;
-    },
-    createPost() {
-      this.postDate = (new Date(this.postDate))
+  setup(_, context) {
+    const session = getSession();
+
+    if (!session.user?._id) {
+      throw new Error('User not found');
+    }
+
+    const user = ref(session.user?._id || '');
+    const postName = ref('');
+    const postDate = ref('');
+    const workout = ref('');
+
+    const selectWorkout = (workoutId: string) => {
+      workout.value = workoutId;
+    };
+
+    const createPost = () => {
+      const processedPostDate = new Date(postDate.value)
         .toLocaleDateString()
         .split('/')
         .map((part, index) => (index === 1 ? +part + 1 : part))
         .join('/');
-      
-      const post = {
-        name: this.postName,
-        date: this.postDate,
-        workout: this.workout,
-        owner: this.user,
-        id: ''
-      } as Post;
-      addPost(post);
-      this.$emit('created', post);
-    }
-  },
-  data() {
-    const user = session.user || { id: '' };
+
+      const post: Post = {
+        name: postName.value,
+        date: processedPostDate,
+        workout: workout.value,
+        owner: user.value
+      };
+
+      context.emit('created', post); 
+    };
 
     return {
-      user: user.id,
-      postName: '',
-      postDate: '',
-      workout: ''
+      user,
+      postName,
+      postDate,
+      workout,
+      selectWorkout,
+      createPost,
     };
   },
 });

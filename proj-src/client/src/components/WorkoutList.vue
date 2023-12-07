@@ -31,7 +31,7 @@ export default defineComponent ({
 <template>
   <div>
     <div class="columns is-multiline" style="margin-top: 20px;">
-      <div class="column is-one-quarter" v-for="workout in workouts" :key="workout.id">
+      <div class="column is-one-quarter" v-for="workout in workouts" :key="workout._id">
         <div class="square-card">
           <div class="card-content">
             <p class="title is-4 has-text-primary">{{ workout.name }}</p>
@@ -48,7 +48,7 @@ export default defineComponent ({
                 <EditWorkout :newWorkout="workout" @updated="updateLocalWorkout"/>
               </p>
               <p>
-                <button class="button is-warning" @click="removeLocalWorkout(workout.id)">Remove</button>
+                <button class="button is-warning" @click="removeLocalWorkout(workout._id)">Remove</button>
               </p>
             </div>
           </div>

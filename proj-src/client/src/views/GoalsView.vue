@@ -1,39 +1,45 @@
 <script setup lang="ts">
-
 import { ref } from 'vue';
-import NewGoalCron from '@/components/NewGoalCron.vue';
-import GoalsList from '@/components/GoalsList.vue';
-import GoalCalendar from '@/components/GoalCalendar.vue';
 import { getSession } from '@/model/session';
-import { postNewGoal, removeGoal, getGoalByIds, type Goal} from '@/model/goals';
+import {
+  postNewGoal,
+  removeGoal,
+  getGoalsByUser,
+  type Goal,
+} from '@/model/goals';
 
 const session = getSession();
-
 const user = session?.user;
 
-if(!user) {
+if (!user) {
   throw new Error('User not logged in');
 }
 
-var goals = ref(getGoalByIds(user.goals));
+const goals = ref<Goal[]>([]);
+
+const fetchGoals = async () => {
+  try {
+    const fetchedGoals = await getGoalsByUser(user.id);
+    goals.value = fetchedGoals;
+  } catch (error) {
+    console.error('Error fetching goals:', error);
+  }
+};
 
 const addGoal = (newGoal: Goal) => {
-  postNewGoal(newGoal, user.id);
-  goals.value.push(newGoal);
-}
+  postNewGoal(newGoal);
+};
 
 const removeLocalGoal = (goalId: string) => {
-  removeGoal(goalId, user.id);
-  goals.value = goals.value.filter(goal => goal.id !== goalId);
-}
+  removeGoal(goalId);
+};
 
 const updateLocalGoal = (updatedGoal: Goal) => {
-  postNewGoal(updatedGoal, user.id);
-  const index = goals.value.findIndex(goal => goal.id === updatedGoal.id);
-  goals.value[index] = updatedGoal;
+  postNewGoal(updatedGoal);
+  fetchGoals();
+};
 
-  goals = ref(goals.value);
-}
+fetchGoals();
 
 </script>
 

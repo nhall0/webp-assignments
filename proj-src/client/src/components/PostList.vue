@@ -1,5 +1,5 @@
 <script lang="ts">
-import { toRefs, defineComponent } from 'vue';
+import { defineComponent, ref , watch} from 'vue';
 import { type Post } from '@/model/posts';
 import { getUserById } from '@/model/users';
 import { getWorkoutById } from '@/model/workouts';
@@ -15,13 +15,31 @@ export default defineComponent({
       required: true
     }
   },
-  methods: {
-    getUserById,
-    getWorkoutById
-  },
   setup(props) {
-    const { userPostsProp : userPosts } = toRefs(props)
-    return { userPosts}
+    const userPosts = ref<Post[]>([]); 
+
+    watch(() => props.userPostsProp, () => {
+      fetchPosts();
+    });
+
+    const fetchPosts = async () => {
+      try {
+        for (const post of props.userPostsProp) {
+          post.owner = (await getUserById(post.owner)).username;
+          post.workout = (await getWorkoutById(post.workout)).name;
+          userPosts.value.push(post);
+        }
+      } catch (error) {
+        console.error('Error fetching user posts:', error);
+      }
+
+    };
+
+    fetchPosts();
+
+    return {
+      userPosts
+    };
   }
 });
 </script>
@@ -30,15 +48,15 @@ export default defineComponent({
   <div :style="{ height: viewHeight }" class="post-list">
     <h2 class="subtitle"><i class="fas fa-clipboard-list"></i> Posts</h2>
     <ul>
-      <li v-for="post in userPosts" :key="post.id" class="post-item">
+      <li v-for="post in userPosts" :key="post._id" class="post-item">
         <div class="post-info">
           <div class="post-title">
             <i class="fas fa-user"></i>
-            <strong>{{ getUserById(post.owner)?.username }}</strong>
+            <strong>{{ post.owner}}</strong>
           </div>
           <div class="workout-info">
             <i class="fas fa-dumbbell"></i>
-            <p>{{ getWorkoutById(post.workout)?.name }}</p>
+            <p>{{ post.workout }}</p>
           </div>
           <div class="date-info">
             <i class="far fa-calendar-alt"></i>

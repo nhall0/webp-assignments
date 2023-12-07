@@ -5,7 +5,7 @@ const { ObjectId, connect } = require('./mongo');
 
 /**
  * @typedef {Object} Post
- * @property {number} id - Goal ID.
+ * @property {number} id - post ID.
  * @property {string} owner - Exercise owner.
  * @property {string} name - Exercise description.
  * @property {string} workout - Exercise muscle group.
@@ -45,14 +45,14 @@ async function getByUserId(userId) {
   return col.find({ user_id: userId }).toArray();
 }
 
-async function add(goal) {
+async function add(post) {
   const col = await getCollection();
-  return col.insertOne(goal);
+  return col.insertOne(post);
 }
 
-async function update(id, goal) {
+async function update(id, post) {
   const col = await getCollection();
-  return col.updateOne({ _id: ObjectId(id) }, { $set: goal });
+  return col.updateOne({ _id: ObjectId(id) }, { $set: post });
 }
 
 async function remove(id) {

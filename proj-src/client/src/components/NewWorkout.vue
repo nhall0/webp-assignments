@@ -1,51 +1,90 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { type Workout} from '@/model/workouts';
-import { type Exercise, getExerciseIndexByName } from '@/model/exercises';
+import { defineComponent, ref, watch } from 'vue';
+import { type Workout } from '@/model/workouts';
+import { type Exercise, getExerciseIndexByName, getExercises, getAllExercises } from '@/model/exercises';
 import PrivacyForm from './PrivacyForm.vue';
 import ExerciseList from './ExerciseList.vue';
 
 export default defineComponent({
-  data() {
-    return {
-      showModal: ref(false),
-      newWorkout: ref<Workout>({
-        name: '',
-        sets: 0,
-        reps: 0,
-        privacy: 0,
-        exercises: [],
-        id: ''
-      }),
-    };
-  },
   components: {
     ExerciseList,
     PrivacyForm
   },
-  methods: {
-    openModal() {
-      this.showModal = true;
-    },
-    closeModal() {
-      this.showModal = false;
-    },
-    addWorkout() {
-      this.$emit('added', this.newWorkout);
-      this.closeModal();
-    },
-    updatePrivacy(value: number) {
-      this.newWorkout.privacy = value;
-    },
-    addExercise(exercise: Exercise) {
-      this.newWorkout.exercises.push(getExerciseIndexByName(exercise.name));
-    },
-    removeExercise(exercise: Exercise) {
-      const index = this.newWorkout.exercises.indexOf(getExerciseIndexByName(exercise.name));
+  setup(props, context) {
+    const showModal = ref(false);
+    const otherExercises = ref<number[]>([]);
+    const newWorkout = ref<Workout>({
+      name: '',
+      sets: 0,
+      reps: 0,
+      privacy: 0,
+      exercises: [],
+      _id: ''
+    });
+
+    const openModal = () => {
+      showModal.value = true;
+    };
+
+    const closeModal = () => {
+      showModal.value = false;
+    };
+
+    const addWorkout = () => {
+      context.emit('added', newWorkout.value);
+      closeModal();
+    };
+
+    const updatePrivacy = (value: number) => {
+      newWorkout.value.privacy = value;
+    };
+
+    const addExercise = async (exercise: Exercise) => {
+      const exerciseIndex = await getExerciseIndexByName(exercise.name);
+      newWorkout.value.exercises.push(exerciseIndex.id);
+      fillOtherExercises();
+    };
+
+    watch(newWorkout, () => {
+      fillOtherExercises();
+    });
+
+    const removeExercise = async (exercise: Exercise) => {
+      const exerciseIndex = await getExerciseIndexByName(exercise.name);
+      const index = newWorkout.value.exercises.indexOf(exerciseIndex.id);
       if (index > -1) {
-        this.newWorkout.exercises.splice(index, 1);
+        newWorkout.value.exercises.splice(index, 1);
       }
-    }
+      fillOtherExercises();
+    };
+
+    const fillOtherExercises = async () => {
+      const exercises = await getAllExercises();
+      const otherExercisesList = [];
+
+      for (let i = 0; i < exercises.length; i++) {
+        if (!newWorkout.value.exercises.includes(exercises[i].id)) {
+          otherExercisesList.push(exercises[i].id);
+        }
+      }
+
+      otherExercises.value = otherExercisesList;
+
+    };
+
+    fillOtherExercises();
+
+    return {
+      showModal,
+      newWorkout,
+      otherExercises,
+      openModal,
+      closeModal,
+      addWorkout,
+      updatePrivacy,
+      addExercise,
+      removeExercise
+    };
   }
 });
 </script>
@@ -82,7 +121,7 @@ export default defineComponent({
           <div class="columns">
             <div class="column">
               <p class="has-text-weight-bold">Base Exercises</p>
-              <ExerciseList @call:back="addExercise" />
+              <ExerciseList :exerciseSubList="otherExercises" @call:back="addExercise" />
             </div>
             <div class="column">
               <p class="has-text-weight-bold">Workout Exercises</p>

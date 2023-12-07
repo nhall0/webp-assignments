@@ -1,3 +1,21 @@
+<script setup lang="ts">
+import { getFriendsByUser, type User } from '@/model/users';
+
+var friends: User[] = [];
+
+async function removeFriend(friend: User) {
+  await removeFriend(friend);
+  loadFriends()
+}
+
+async function loadFriends() {
+  friends = await getFriendsByUser();
+}
+
+loadFriends();
+
+</script>
+
 <template>
   <div class="friends-page">
     <section class="section">
@@ -20,19 +38,6 @@
     </section>
   </div>
 </template>
-  
-<script setup lang="ts">
-import { getSession } from '@/model/session';
-import { getFriendsByUser, type User } from '@/model/users';
-
-const session = getSession();
-const user = session.user as User;
-
-const friends = getFriendsByUser(user);
-
-const removeFriend = (friend: User) => {
-};
-</script>
   
 <style scoped>
 .friends-box {

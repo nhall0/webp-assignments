@@ -3,38 +3,46 @@ import { ref } from 'vue';
 import WorkoutList from '@/components/WorkoutList.vue';
 import NewWorkout from '@/components/NewWorkout.vue';
 import { getSession } from '@/model/session';
-import { getWorkoutsFromUser, type Workout, removeWorkout, postNewWorkout } from '@/model/workouts';
+import { getWorkoutsFromUser, type Workout, removeWorkout, postNewWorkout, updateWorkout } from '@/model/workouts';
 
 const user = getSession().user;
 if (!user) {
   throw new Error('user is required');
 }
 
-var workouts = ref(getWorkoutsFromUser(user.id));
+var workouts = ref<Workout[]>([]);
+
+const fetchWorkouts = async () => {
+  try {
+    const fetchedWorkouts = await getWorkoutsFromUser(user._id);
+    workouts.value = fetchedWorkouts;
+  } catch (error) {
+    console.error('Error fetching workouts:', error);
+  }
+};
 
 const addLocalWorkout = (workout: Workout) => {
-  postNewWorkout(workout, user.id);
-  workouts.value.push(workout);
+  postNewWorkout(workout);
+  fetchWorkouts();
 }
 
 const removeLocalWorkout = (workoutId: string) => {
-  removeWorkout(workoutId, user.id);
-  workouts.value = workouts.value.filter(w => w.id !== workoutId);
+  removeWorkout(workoutId);
+  fetchWorkouts();
 }
 
 const updateLocalWorkout = (workout: Workout) => {
-  postNewWorkout(workout, user.id);
-  const index = workouts.value.findIndex(w => w.id === workout.id);
-  workouts.value[index] = workout;
-
-  workouts = ref(workouts.value);
+  updateWorkout(workout);
+  fetchWorkouts();
 }
+
+fetchWorkouts();
 </script>
 
 <template>
   <section class="section">
     <h1 class="title has-text-primary">Workouts</h1>
-    <NewWorkout :user="user.id" @added="addLocalWorkout" />
+    <NewWorkout :user="user._id" @added="addLocalWorkout" />
     <WorkoutList :workouts="workouts" @removed="removeLocalWorkout" @updated="updateLocalWorkout"/>
   </section>
 </template>

@@ -24,8 +24,8 @@ export default defineComponent({
     updateGoal(goal: Goal) {
       this.$emit('updated', goal);
     },
-    getWorkoutName(workoutId: string) {
-      const workout = getWorkoutById(workoutId);
+    async getWorkoutName(workoutId: string) {
+      const workout = await getWorkoutById(workoutId);
       return workout?.name;
     },
     getNextDateFromCron(cron: string) {

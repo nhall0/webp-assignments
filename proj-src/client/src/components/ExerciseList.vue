@@ -6,25 +6,37 @@ export default defineComponent({
   props: {
     exerciseSubList: {
       type: Array as () => number[],
-      required: false,
+      required: true,
     }
   },
   methods: {
     sendCallBack(exercise: Exercise) {
       this.$emit('call:back', exercise);
     },
+    async fetchExercises(exerciseSubList: number[]) {
+      const response = await getExercises(exerciseSubList);
+      this.exerciseSubListOutput = response;
+    }
   },
-  setup() {
+  data() {
     return {
-      getExercises
-    };
+      exerciseSubListOutput: [] as Exercise[],
+    }
   },
+  watch: {
+    exerciseSubList: {
+      immediate: true,
+      handler(exerciseSubList: number[]) {
+        this.fetchExercises(exerciseSubList);
+      }
+    }
+  }
 });
 </script>
 
 <template>
   <div class="exercise-list">
-    <button v-for="exercise in getExercises(exerciseSubList)" :key="exercise.name" @click="sendCallBack(exercise)">
+    <button v-for="exercise in exerciseSubListOutput" :key="exercise.name" @click="sendCallBack(exercise)">
       {{ exercise.name }}
     </button>
   </div>

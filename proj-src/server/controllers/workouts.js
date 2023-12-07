@@ -4,11 +4,21 @@ const {getAll, get, getByName, add, update, remove, getByUserId} = require('../m
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
-    res.send(getAll());
+        getAll().then((workouts) => {
+            res.send(workouts);
+        }
+        ).catch(next)
 })
+
 .get('/:id', (req, res, next) => {
-        get(+req.params.id).then((workout) => {
-            res.send(workout);
+        get(req.params.id).then((workout) => {
+            if(workout == null){
+                res.send({});
+            }
+            else{
+                res.send(workout);
+            }
+            
         }
         ).catch(next)
     }
@@ -23,6 +33,11 @@ router.get('/', (req, res, next) => {
 .post('/', (req, res, next) => {
         const user = req.user;
         req.body.user_id = user._id;
+
+        if(req.body._id != null){
+            delete req.body._id;
+        }
+
         add(req.body).then((workout) => {
             res.send(workout);
         }
@@ -31,7 +46,7 @@ router.get('/', (req, res, next) => {
 ) 
 .patch('/:id', (req, res, next) => {
     
-        update(+req.params.id, req.body).then((workout) => {
+        update(req.params.id, req.body).then((workout) => {
             res.send(workout);
         }
         ).catch(next)
@@ -39,7 +54,7 @@ router.get('/', (req, res, next) => {
     }
 )   
 .delete('/:id', (req, res, next) => {
-        remove(+req.params.id).then((workout) => {
+        remove(req.params.id).then((workout) => {
             res.send(workout);
         }
         ).catch(next)

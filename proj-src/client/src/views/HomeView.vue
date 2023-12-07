@@ -1,26 +1,46 @@
 <script setup lang="ts">
-import { ref} from 'vue';
+import { ref, watch } from 'vue';
 import PostList from '@/components/PostList.vue';
 import NewPost from '@/components/NewPost.vue';
 import { getSession } from '@/model/session';
-import { getPostsByUsers, type Post } from '@/model/posts';
+import { getPostsByUsers, type Post, addPost } from '@/model/posts';
 
 const session = getSession();
 const user = session?.user;
-if(!user) {
+
+if (!user) {
   throw new Error('User not logged in');
 }
 
-var userPosts = ref(getPostsByUsers([user.id]));
-var friendPosts = ref(getPostsByUsers([user.id, ...user.friends]));
+const userPosts = ref<Post[]>([]);
+const friendPosts = ref<Post[]>([]);
 
-const addPost = (post: Post) => {
-  userPosts.value.push(post);
-  friendPosts.value.push(post);
+watch(userPosts, (newValue) => {
+  console.log('User Posts Updated:', newValue);
+});
 
-  userPosts.value = getPostsByUsers([user.id]);
-  friendPosts.value = getPostsByUsers([user.id, ...user.friends]);
-}
+watch(friendPosts, (newValue) => {
+  console.log('Friend Posts Updated:', newValue);
+});
+
+const fetchPosts = async () => {
+  userPosts.value = await getPostsByUsers([user._id]);
+  friendPosts.value = await getPostsByUsers([user._id, ...user.friends]);
+};
+
+const addPostWrapper = (newPost: Post) => {
+  console.log('Adding new post:', newPost)
+  addPost(newPost)
+    .then(() => {
+      console.log("New post added successfully");
+    })
+    .catch((error) => {
+      console.error("Error adding new post:", error);
+    }); 
+  fetchPosts();
+};
+
+fetchPosts();
 </script>
 
 <template>
@@ -43,7 +63,7 @@ const addPost = (post: Post) => {
           <div class="column is-half-desktop is-half-tablet is-full-mobile" style="height: 100%;">
             <div class="custom-box">
 
-              <NewPost @created="addPost"/>
+              <NewPost @created="addPostWrapper"/>
               <PostList :userPostsProp="userPosts" :viewHeight="'45%'"/>
             </div>
           </div>

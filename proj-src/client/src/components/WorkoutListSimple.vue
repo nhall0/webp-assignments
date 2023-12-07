@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { getWorkoutsFromUser, type Workout } from '@/model/workouts';
 
 export default defineComponent({
@@ -9,19 +9,29 @@ export default defineComponent({
       required: true,
     },
   },
-  methods:{
-    onSelect(workoutId: string) {
-      this.selectedWorkoutId = workoutId;
-      this.$emit('selected', workoutId);
-    }
-  },
-  data(props) {
-    const workouts = ref<Workout[]>(getWorkoutsFromUser(props.user));
-    const selectedWorkoutId = ref('');
+  setup(props, context) {
+    const workouts = ref<Workout[]>([]);
+    const selectedWorkoutId = ref<string>('');
+
+    const onSelect = (workoutId: string) => {
+      selectedWorkoutId.value = workoutId;
+      context.emit('selected', workoutId);
+    };
+
+    const fetchWorkouts = async () => {
+      try {
+        workouts.value = await getWorkoutsFromUser(props.user);
+      } catch (error) {
+        console.error('Error fetching workouts:', error);
+      }
+    };
+
+    onMounted(fetchWorkouts);
 
     return {
       workouts,
-      selectedWorkoutId
+      selectedWorkoutId,
+      onSelect,
     };
   },
 });
@@ -30,7 +40,7 @@ export default defineComponent({
 <template>
   <div>
     <div class="workout-list">
-      <button v-for="workout in workouts" :key="workout.id" @click="onSelect(workout.id)" :class="['button',{ 'is-info': workout.id !== selectedWorkoutId }, { 'is-selected': workout.id === selectedWorkoutId }]"> {{ workout.name }} </button>
+      <button v-for="workout in workouts" :key="workout._id" @click="onSelect(workout._id)" :class="['button',{ 'is-info': workout._id !== selectedWorkoutId }, { 'is-selected': workout._id === selectedWorkoutId }]"> {{ workout.name }} </button>
     </div>
   </div>
 </template>

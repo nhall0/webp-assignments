@@ -1,11 +1,6 @@
-import goalsData from '@/data/goals.json';
 import * as cronParser from 'cron-parser';
-import { v4 as uuidv4 } from 'uuid';
-import { addGoal, deleteGoal } from './users';
 
 import {api} from "./session";
-
-export let goals: { [key: string]: Goal } = goalsData as unknown as { [key: string]: Goal };
 
 export interface Goal {
   id: string;
@@ -16,34 +11,33 @@ export interface Goal {
   workout: string;
 }
 
-export function postNewGoal(goal: Goal, userId: string) {
-  if(goal.id == ''){
-    const id = uuidv4();
-    goal.id = id;
-    addGoal(userId, goal.id);
-  }
-  goals[goal.id] = goal;
+export function postNewGoal(goal: Goal) {
+  api("goals", {
+    method: "POST",
+    body: JSON.stringify(goal)
+  });
 }
 
-export function removeGoal(id: string, userId: string) {
-  deleteGoal(id, userId);
-  delete goals[id];
+export function removeGoal(id: string) {
+  api("goals/" + id, {
+    method: "DELETE"
+  });
 }
 
 export function getGoalById(id: string) {
-  return getGoals().find(goal => goal.id === id);
+  return api("goals/" + id);
 }
 
 export function getGoalByIds(ids: string[]) {
-  return getGoals().filter(goal => ids.includes(goal.id));
+  return api("goals/ids/" + ids);
+}
+
+export function getGoalsByUser(user: string) {
+  return api("goals/user/" + user);
 }
 
 export function getGoals() {
-  return Object.keys(goals).map((key) => {
-    const goal = goals[key];
-    goal.id = key;
-    return goal;
-  });
+  return api("goals");
 }
 
 export function getMonthsDatesFromCron(cron: string, month: number) {

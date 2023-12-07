@@ -1,12 +1,7 @@
-import workoutData from "@/data/workouts.json";
-import { getUserById } from "@/model/users";
-import { v4 as uuidv4 } from 'uuid';
-import { addWorkout, deleteWorkout } from "@/model/users";
-
 import {api} from "./session";
 
 export interface Workout {
-  id: string;
+  _id: string;
   name: string;
   exercises: number[];
   sets: number;
@@ -14,49 +9,29 @@ export interface Workout {
   privacy: number;
 }
 
-export let workouts: { [key: string]: Workout } = workoutData as unknown as { [key: string]: Workout };
-
-export function getWorkoutById(id: string) {
-  return getWorkouts().find(workout => workout.id === id);
+export async function getWorkoutById(id: string) : Promise<Workout>{
+  if(!id) return Promise.resolve({} as Workout);
+  const workout = await api("workouts/" + id);
+  if(workout == null) return Promise.resolve({"name":"Workout deleted."} as Workout);
+  return await api("workouts/" + id);
 }
 
-export function removeWorkout(id: string, userId: string) {
-  deleteWorkout(id, userId);
-  delete workouts[id];
+export async  function removeWorkout(id: string) {
+  await api("workouts/" + id, null, "DELETE");
 }
 
-export function postNewWorkout(workout: Workout, userId: string) {
-  if(workout.id == ''){
-    const id = uuidv4();
-    workout.id = id;
-    addWorkout(userId, workout.id);
-  }
-  workouts[workout.id] = workout;
+export async function postNewWorkout(workout: Workout)  {
+  await api("workouts", workout);
 }
 
-export function getWorkouts() {
-  return Object.keys(workouts).map((key) => {
-    const workout = workouts[key];
-    workout.id = key;
-    return workout;
-  });
+export async function updateWorkout(workout: Workout) {
+  await api("workouts/" + workout._id, workout, "PATCH");
 }
 
-export function getWorkoutsFromUser(userId: string) {
-  const user = getUserById(userId);
-  if (!user) {
-    return [];
-  }
+export async function getWorkouts() : Promise<Workout[]>{
+  return await api("workouts");
+}
 
-  const userWorkouts = user.workouts;
-  var returnWorkouts: Workout[] = [];
-
-  for (let i = 0; i < userWorkouts.length; i++) {
-    var returnWorkout = getWorkoutById(userWorkouts[i])
-    if (returnWorkout != null) {
-      returnWorkouts.push(returnWorkout);
-    }
-  }
-
-  return returnWorkouts;
+export async function getWorkoutsFromUser(userId: string) : Promise<Workout[]>{
+  return await api("workouts/user/" + userId);
 }

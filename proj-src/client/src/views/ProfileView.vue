@@ -2,12 +2,18 @@
 import { ref } from 'vue';
 import { getSession } from '@/model/session';
 import { getPostsByUsers } from '@/model/posts';
-import { getGoalByIds } from '@/model/goals';
+import { getGoalsByUser } from '@/model/goals';
 
 const user = getSession().user;
 if (!user) {
   throw new Error('User is not logged in');
 }
+
+const workoutStatistics = ref({
+  total: 0,
+  lastWorkoutDate: '',
+  goalCount: 0
+});
 
 const profile = ref({
   name: user.firstName + ' ' + user.lastName,
@@ -19,26 +25,25 @@ const passwords = ref({
   new: ''
 });
 
-const changePassword = () => {
-  console.log('Changing password...');
+const fetchWorkoutStatistics = async () => {
+  try {
+    const posts = await getPostsByUsers([user.id]);
+    const goals = await getGoalsByUser(user.id);
+    workoutStatistics.value.total = posts.length;
+    workoutStatistics.value.lastWorkoutDate = posts[0].date;
+    workoutStatistics.value.goalCount = goals.length;
+  } catch (error) {
+    console.error('Error fetching workout statistics:', error);
+  }
 };
 
-const posts = getPostsByUsers([user.id]);
-var lastWorkoutDate = '';
-if(posts.length > 0) {
-  const lastPost = posts[0];
-  if(lastPost.date) {
-    lastWorkoutDate = lastPost.date;
-  }
-}
+const changePassword = async () => {
+  console.log('Changing password');
+};
 
-const goals = getGoalByIds(user.goals);
 
-const workoutStatistics = ref({
-  total: user.workouts.length,
-  lastWorkoutDate,
-  goalCount: goals.length
-});
+fetchWorkoutStatistics();
+
 </script>
 
 <template>

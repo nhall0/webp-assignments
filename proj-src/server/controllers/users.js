@@ -3,7 +3,7 @@
 */
 
 const express = require('express');
-const { getAll, get, search, create, update, remove, login, register, addFriend, removeFriend } = require('../models/users');
+const { getAll, get, search, getByIds, create, update, remove, login, register, addFriend, removeFriend } = require('../models/users');
 const { requireUser } = require('../middleware/authorization');
 const { debug } = require('console');
 const router = express.Router();
@@ -24,6 +24,12 @@ router.get('/', requireUser(true), (req, res, next) => {
     res.send( user );
 
 })
+.get('/friends', requireUser(), (req, res, next) => {
+    const friends = getByIds(req.body.user.friends);
+    res.send(friends);
+})
+
+
 .post('/', requireUser(true), (req, res, next) => {
 
     const user = create(req.body);

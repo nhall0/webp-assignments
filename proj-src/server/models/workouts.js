@@ -35,7 +35,7 @@ async function getAll() {
  */
 async function get(id) {
     const col = await getCollection();
-    return col.findOne({ _id: ObjectId(id) });
+    return col.findOne({ _id: new ObjectId(id)});
 }
 
 async function getByName(name) {
@@ -50,17 +50,21 @@ async function add(workout) {
 
 async function update(id, workout) {
     const col = await getCollection();
-    return col.updateOne({ _id: ObjectId(id) }, { $set: workout });
+    // Remove the id
+
+    delete workout._id;
+    return col.updateOne({ _id: new ObjectId(id) }, { $set: workout });
 }
 
 async function remove(id) {
     const col = await getCollection();
-    return col.deleteOne({ _id: ObjectId(id) });
+    console.log(id)
+    return col.deleteOne({ _id: new ObjectId(id) });
 }
 
 async function getByUserId(userId) {
     const col = await getCollection();
-    return col.find({ owner: userId }).toArray();
+    return col.find({ user_id: userId }).toArray();
 }
 
 module.exports = {

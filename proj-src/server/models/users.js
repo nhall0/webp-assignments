@@ -62,6 +62,11 @@ async function search(query) {
   return col.find({ $text: { $search: query } }).toArray();
 }
 
+async function getByIds(ids) {
+  const col = await getCollection();
+  return col.find({ _id: { $in: ids.map(id => ObjectId(id)) } }).toArray();
+}
+
 /**
  * @param {BaseUser} values - The user to create.
  * @returns {User} The created user.
@@ -201,5 +206,5 @@ function verifyJWT(token) {
 
 
 module.exports = {
-  getAll, get, search, create, update, remove, login, register, generateJWT, verifyJWT , addFriend, removeFriend
+  getAll, get, search, getByIds, create, update, remove, login, register, generateJWT, verifyJWT , addFriend, removeFriend
 };

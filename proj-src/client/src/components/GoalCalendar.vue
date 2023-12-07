@@ -2,6 +2,7 @@
 import { defineComponent, ref} from 'vue';
 
 import { getMonthsDatesFromCron, type Goal} from '@/model/goals';
+import { type Post } from '@/model/posts';
 import { getSession } from '@/model/session';
 import { getPostsByDate } from '@/model/posts';
 import { getWorkoutById } from '@/model/workouts';
@@ -48,16 +49,17 @@ export default defineComponent({
             calculateCalendarDays();
         };
 
-        const calculateCalendarDays = () => {
+        async function calculateCalendarDays(): Promise<void> {
             const monthDates: Record<string, string[]> = {};
 
+            // Collect dates and goals
             for (let goal of props.userGoals) {
                 const dates = getMonthsDatesFromCron(goal.repetition, currentMonth.value.getMonth());
                 for (let date of dates) {
                     if (!monthDates[date]) {
                         monthDates[date] = [];
                     }
-                    monthDates[date].push(getWorkoutById(goal.workout)?.name || 'Workout not found');
+                    monthDates[date].push(goal.workout); 
                 }
             }
 
@@ -68,19 +70,26 @@ export default defineComponent({
             const lastDay = new Date(currentYear, currentMonthValue + 1, 0);
 
             for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
-                const posts = getPostsByDate(date.toLocaleDateString(), session.id).map(post => getWorkoutById(post.workout)?.name || 'Workout not found');
-                const goals = monthDates[date.toLocaleDateString()] || [];
+                const workoutIds = monthDates[date.toLocaleDateString()] || [];
+                const workoutNames = await Promise.all(workoutIds.map(async (id) => {
+                    const workout = await getWorkoutById(id);
+                    return workout ? workout.name : 'Workout not found';
+                }));
+
+                const posts = await getPostsByDate(date.toLocaleDateString());
+                const postWorkoutNames = await Promise.all(posts.map(async (post: Post) => {
+                    const workout = await getWorkoutById(post.workout);
+                    return workout ? workout.name : 'Workout not found';
+                }));
 
                 daysInMonth.push({
                     date: new Date(date),
                     label: date.getDate().toString(),
-                    goals: goals,
-                    posts: posts,
+                    goals: workoutNames,
+                    posts: postWorkoutNames,
                 });
             }
-
-            calendarDays.value = daysInMonth;
-        };
+        }
 
         calculateCalendarDays();
 

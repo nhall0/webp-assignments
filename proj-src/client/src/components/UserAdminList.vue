@@ -1,10 +1,19 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { getUsers } from '@/model/users';
+import { defineComponent, ref, onMounted } from 'vue';
+import { getUsers, type User } from '@/model/users';
 
 export default defineComponent({
   setup() {
-    const users = getUsers();
+    const users = ref([] as User[]);
+    const fetchUsers = async () => {
+      try {
+        users.value = await getUsers();
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    onMounted(fetchUsers);
     return { users };
   }
 });

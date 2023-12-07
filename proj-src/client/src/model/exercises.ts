@@ -1,7 +1,3 @@
-import exercises from "@/data/exercises.json";
-
-import { getWorkoutById } from "./workouts";
-
 import {api} from "./session";
 
 export interface Exercise {
@@ -9,39 +5,36 @@ export interface Exercise {
   description: string;
   muscleGroup: string;
   equipment: string;
+  id: number;
 }
 
-export function getExerciseById(index: number) {
-  const exercises = getExercises();
-  return exercises[index];
+export async function getExerciseById(index: number) : Promise<Exercise> {
+  const exercise = api("exercises/" + index);
+  return exercise;
 }
 
-export function getExerciseIndexByName(name: string) {
-  const exercises = getExercises();
-  return exercises.findIndex(exercise => exercise.name === name);
+export async function getExerciseIndexByName(name: string) : Promise<Exercise> {
+  const exercise = api("exercises/name/" + name);
+  return exercise;
 }
 
-export function getExercises(subList?: number[]): Exercise[] {
-  const returnExercises: Exercise[] = [];
-
-  if (subList) {
-    subList.forEach(index => {
-      const exercise = getExerciseById(index);
-      if (exercise) {
-        returnExercises.push(exercise);
-      }
-    });
-  } else {
-    returnExercises.push(...exercises);
-  }
-
-  return returnExercises;
+export async function getAllExercises(): Promise<Exercise[]> {
+  const exercises = await api("exercises");
+  return exercises;
 }
 
-export function getExercisesFromWorkout(workoutId: string) {
-  var workout = getWorkoutById(workoutId);
-  if (workout === undefined) {
-    return [];
-  }
-  return workout.exercises.map(index => getExerciseById(index));
+export async function getExercises(subList: number[] = []): Promise<Exercise[]> {
+    const exercises = await api("exercises");
+
+    if(subList.length === 0) {
+      return []
+    }
+
+    const returnExercises: Exercise[] = [];
+
+    for(const index of subList) {
+      returnExercises.push(exercises[index]);
+    }
+
+    return returnExercises; 
 }

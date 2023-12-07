@@ -1,21 +1,32 @@
 <script lang="ts">
-import { ref } from 'vue';
-import { useLogin, getSession } from '../model/session'
-import { makeUser } from '../model/users'
-
-const session = getSession()
-const { login, logout } = useLogin()
-
-const doLogin = (username:string, password:string) => {
-  login(username, password)
-}
-
-const doLogout = () => {
-  logout();
-}
+import { ref} from 'vue';
+import { useLogin, getSession } from '../model/session';
+import { makeUser } from '../model/users';
 
 export default {
   setup() {
+    const session = getSession(); 
+    const { login, logout } = useLogin(); 
+
+    const activeTab = ref('login'); 
+    const loginUser = ref('');
+    const loginPassword = ref('');
+    const signupName = ref('');
+    const signupEmail = ref('');
+    const signupPassword = ref('');
+
+    const changeTab = (tab: string) => {
+      activeTab.value = tab;
+    };
+
+    const doLogin = (username: string, password: string) => {
+      login(username, password);
+    };
+
+    const doLogout = () => {
+      logout();
+    };
+
     return {
       activeTab,
       loginUser,
@@ -27,21 +38,9 @@ export default {
       doLogin,
       doLogout,
       makeUser
-    }
+    };
   }
-}
-
-var activeTab = ref("login");
-var loginUser = ref("");
-var loginPassword = ref("");
-var signupName = ref("");
-var signupEmail = ref("");
-var signupPassword = ref("");
-
-function changeTab(tab: string) {
-  activeTab.value = tab;
-}
-
+};
 </script>
 
 <template>
