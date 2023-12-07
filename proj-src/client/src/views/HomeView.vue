@@ -15,29 +15,13 @@ if (!user) {
 const userPosts = ref<Post[]>([]);
 const friendPosts = ref<Post[]>([]);
 
-watch(userPosts, (newValue) => {
-  console.log('User Posts Updated:', newValue);
-});
-
-watch(friendPosts, (newValue) => {
-  console.log('Friend Posts Updated:', newValue);
-});
-
 const fetchPosts = async () => {
-  userPosts.value = await getPostsByUsers([user._id]);
   friendPosts.value = await getPostsByUsers([user._id, ...user.friends]);
+  userPosts.value = friendPosts.value.filter((post) => post.owner_name === user.username);
 };
 
 const addPostWrapper = (newPost: Post) => {
-  console.log('Adding new post:', newPost)
-  addPost(newPost)
-    .then(() => {
-      console.log("New post added successfully");
-    })
-    .catch((error) => {
-      console.error("Error adding new post:", error);
-    }); 
-  fetchPosts();
+  addPost(newPost).then(() => fetchPosts());
 };
 
 fetchPosts();

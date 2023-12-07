@@ -1,6 +1,3 @@
-/* B"H
-*/
-
 const { ObjectId, connect } = require('./mongo');
 
 /**
@@ -18,17 +15,10 @@ async function getCollection() {
   return db.collection(COLLECTION_NAME);
 }
 
-/**
- * @returns {Promise<Exercise[]>} An array of products.
- */
 async function getAll() {
   const col = await getCollection();
   return col.find({}).toArray();
 }
-
-/**
- * @param {number} id - Index id.
- */
 
 async function get(id) {
   const col = await getCollection();

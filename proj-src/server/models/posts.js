@@ -1,6 +1,5 @@
-/* B"H
-*/
-
+const { get: getUsers } = require('./users');
+const { get: getWorkouts } = require('./workouts');
 const { ObjectId, connect } = require('./mongo');
 
 /**
@@ -18,17 +17,17 @@ async function getCollection() {
   return db.collection(COLLECTION_NAME);
 }
 
-/**
- * @returns {Promise<Exercise[]>} An array of products.
- */
 async function getAll() {
   const col = await getCollection();
-  return col.find({}).toArray();
-}
+  const posts = await col.find({}).toArray();
 
-/**
- * @param {number} id - Index id.
- */
+  for (const post of posts) {
+    post.owner_name = (await getUsers(post.owner)).username;
+    post.workout = (await getWorkouts(post.workout)).name;
+  }
+
+  return posts  
+}
 
 async function get(id) {
   const col = await getCollection();
@@ -42,7 +41,7 @@ async function getByIds(ids) {
 
 async function getByUserId(userId) {
   const col = await getCollection();
-  return col.find({ user_id: userId }).toArray();
+  return await col.find({ user_id: userId }).toArray();
 }
 
 async function add(post) {

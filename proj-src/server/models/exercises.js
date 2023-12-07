@@ -1,7 +1,4 @@
-/* B"H
-*/
-
-const { ObjectId, connect } = require('./mongo');
+const { connect } = require('./mongo');
 
 /**
  * @typedef {Object} Exercise
@@ -19,20 +16,11 @@ async function getCollection() {
   return db.collection(COLLECTION_NAME);
 }
 
-/**
- * @returns {Promise<Exercise[]>}
- */
 async function getAll() {
   const col = await getCollection();
 
-  // PRINT OUT THE LIST OF EXERCISES
-  
   return await col.find({}).toArray();
 }
-
-/**
- * @param {number} id - Index id.
- */
 
 async function get(id) {
   const col = await getCollection();

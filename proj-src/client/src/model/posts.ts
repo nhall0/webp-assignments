@@ -6,6 +6,7 @@ export interface Post {
     name: string;
     workout: string;
     date: string;
+    owner_name?: string;
 }
 
 export async function addPost(post: Post) {
@@ -47,6 +48,8 @@ export async function getPostsByUsers(users: string[]) {
         const dateB = new Date(b.date).getTime() as number;
         return dateB - dateA;
     });
+
+    console.log(sortedPosts)
 
     return sortedPosts;
 }

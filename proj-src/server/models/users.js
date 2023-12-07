@@ -1,11 +1,8 @@
 const { ObjectId, connect } = require('./mongo');
 
 const jwt = require('jsonwebtoken');
-
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
-
-// @ts-check
 
 /**
  * @typedef {Object} BaseUser
@@ -20,41 +17,21 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
  * @property {Array<string>} friends
  */
 
-/**
- * @typedef {Object} HasId
- * @property {string} _id
- */
-
-/**
- * @typedef {BaseUser & HasId} User
- */
-
-
 const COLLECTION_NAME = 'users';
 async function getCollection() {
   const db = await connect();
   return db.collection(COLLECTION_NAME);
 }
 
-/**
- * @type { {users: User[]} }
- */
-
-/**
- * @returns {User[]} 
- */
 async function getAll() {
   const col = await getCollection();
   return col.find({}).toArray();
 }
 
-
-/**
- * @param {number} id 
- */
 async function get(id) {
   const col = await getCollection();
-  return col.find({}).toArray();
+  const user = await col.findOne({ _id: new ObjectId(id) });
+  return user;
 }
 
 async function search(query) {
@@ -72,10 +49,6 @@ async function getByIds(ids) {
   return user.friends;
 }
 
-/**
- * @param {BaseUser} values - The user to create.
- * @returns {User} The created user.
- */
 async function create(values) {
   const col = await getCollection();
   const newItem = {
@@ -85,10 +58,6 @@ async function create(values) {
   return newItem;
 }
 
-/**
- * @param {BaseUser} values - The user to create.
- * @returns {User} The created user.
- */
 async function register(values) {
   const col = await getCollection();
 
@@ -113,11 +82,6 @@ async function register(values) {
   return newItem;
 }
 
-/**
- * @param {string} username
- * @param {string} password
- * @returns { Promise< { user: User, token: string}> } The created user.
- */
 async function login(username, password) {
   const col = await getCollection();
 
@@ -140,10 +104,6 @@ async function login(username, password) {
   return { user, token };
 }
 
-/**
- * @param {User} newValues - The user's new data.
- * @returns {User} The updated user.
- */
 async function update(newValues) {
   const col = await getCollection();
   const newItem = {
@@ -176,9 +136,6 @@ async function removeFriend(id, friendId) {
   return user;
 }
 
-/**
- * @param {number} id - The user's ID.
- */
 async function remove(id) {
   const col = await getCollection();
   await col.deleteOne({ _id: new ObjectId(id) });
@@ -199,7 +156,6 @@ function generateJWT(user) {
 function verifyJWT(token) {
   return new Promise((resolve, reject) => {
 
-    //CATCH ERROR IF TOKEN IS UNDEFINED
     if(!token) {
       reject(new Error('Token is undefined'));
     }

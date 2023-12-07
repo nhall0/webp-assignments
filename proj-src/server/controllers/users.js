@@ -14,7 +14,6 @@ router.get('/', requireUser(true), (req, res, next) => {
     }
 })
 .get('/search', requireUser() , (req, res, next) => {
-
     const results = search(req.query.q);
     res.send(results);
 })
@@ -26,16 +25,12 @@ router.get('/', requireUser(true), (req, res, next) => {
     ).catch(next);
 })
 .get('/:id', requireUser(), (req, res, next) => {
-
     const user = get(+req.params.id);
     res.send( user );
-
 })
 .post('/', requireUser(true), (req, res, next) => {
-
     const user = create(req.body);
     res.send(user);
-
 })
 .post('/register', (req, res, next) => {
     const user = register(req.body);
@@ -52,8 +47,6 @@ router.get('/', requireUser(true), (req, res, next) => {
 .delete('/friends/:id', requireUser(), (req, res, next) => {
     const user = req.user;
     const friend = req.params.id;
-
-    console.log(user._id, friend);
 
     removeFriend(user._id, friend).then(user => {
         res.send({"message": "Friend removed", "code": 200});

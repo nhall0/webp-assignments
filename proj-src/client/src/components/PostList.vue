@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref , watch} from 'vue';
 import { type Post } from '@/model/posts';
-import { getUserById } from '@/model/users';
-import { getWorkoutById } from '@/model/workouts';
 
 export default defineComponent({
   props: {
@@ -19,23 +17,8 @@ export default defineComponent({
     const userPosts = ref<Post[]>([]); 
 
     watch(() => props.userPostsProp, () => {
-      fetchPosts();
+      userPosts.value = props.userPostsProp;
     });
-
-    const fetchPosts = async () => {
-      try {
-        for (const post of props.userPostsProp) {
-          post.owner = (await getUserById(post.owner)).username;
-          post.workout = (await getWorkoutById(post.workout)).name;
-          userPosts.value.push(post);
-        }
-      } catch (error) {
-        console.error('Error fetching user posts:', error);
-      }
-
-    };
-
-    fetchPosts();
 
     return {
       userPosts
@@ -52,7 +35,7 @@ export default defineComponent({
         <div class="post-info">
           <div class="post-title">
             <i class="fas fa-user"></i>
-            <strong>{{ post.owner}}</strong>
+            <strong>{{ post.owner_name}}</strong>
           </div>
           <div class="workout-info">
             <i class="fas fa-dumbbell"></i>

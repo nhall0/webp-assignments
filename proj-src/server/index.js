@@ -17,9 +17,7 @@ const PORT = process.env.PORT ?? 3000;
 
 app
     .use('/', express.static(path.join( __dirname, '../client/dist/') ) )
-    .use(express.json()) // APPLICATION / JSON ONLY
-
-    // CORS
+    .use(express.json()) 
     .use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', '*');
@@ -49,10 +47,6 @@ app
             .json({ message: err?.message || err });
     })
 
-console.log('1: Trying to start server...');
-
 app.listen(PORT, () => {
-    console.log(`2: Server is running at http://localhost:${PORT}`);
+    console.log(`Listening on port ${PORT}`);
 });
-
-console.log('3: End of file, waiting for requests...');
