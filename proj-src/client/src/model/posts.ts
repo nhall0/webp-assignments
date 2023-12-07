@@ -49,7 +49,5 @@ export async function getPostsByUsers(users: string[]) {
         return dateB - dateA;
     });
 
-    console.log(sortedPosts)
-
     return sortedPosts;
 }

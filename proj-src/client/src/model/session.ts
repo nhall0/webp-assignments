@@ -25,8 +25,6 @@ export function api(action: string, body?: unknown, method?: string, headers?: a
     headers['Authorization'] = `Bearer ${session.token}`;
   }
 
-  console.log(session.user)
-
   return myFetch.api(`${action}`, body, method, headers)
     .catch(err=> showError(err))
     .finally(()=> session.loading--);
