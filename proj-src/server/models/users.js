@@ -64,7 +64,12 @@ async function search(query) {
 
 async function getByIds(ids) {
   const col = await getCollection();
-  return col.find({ _id: { $in: ids.map(id => ObjectId(id)) } }).toArray();
+  const user = await col.findOne({ _id: new ObjectId(ids) });
+  for (let i = 0; i < user.friends.length; i++) {
+    user.friends[i] = await col.findOne({ _id: new ObjectId(user.friends[i]) });
+    user.friends[i].password = undefined;
+  }
+  return user.friends;
 }
 
 /**
@@ -87,6 +92,10 @@ async function create(values) {
 async function register(values) {
   const col = await getCollection();
 
+  if(!values.email || !values.password) {
+    throw new Error('Missing email or password');
+  }
+
   if(await col.findOne({ email: values.email })) {
     throw new Error('Email already exists');
   }
@@ -94,6 +103,8 @@ async function register(values) {
   if(values.password <= 0) {
     throw new Error('Password is too short');
   }
+
+  delete values._id;
 
   const newItem = {
     ...values,
@@ -138,31 +149,30 @@ async function update(newValues) {
   const newItem = {
     ...newValues,
   };
-  await col.updateOne({ _id: ObjectId(newValues.id) }, { $set: newItem });
+  delete newItem._id;
+  await col.updateOne({ _id: new ObjectId(newValues._id) }, { $set: newItem });
   return newItem;
 }
 
 async function addFriend(id, friendId) {
   const col = await getCollection();
-  const user = await col.findOne({ _id: ObjectId(id) });
+  const user = await col.findOne({ email: friendId });
 
-  if(user.friends.includes(friendId)) {
-    throw new Error('Friend already added');
+  if(!user) {
+    throw new Error('Friend not found');
   }
 
-  await col.updateOne({ _id: ObjectId(id) }, { $push: { friends: friendId } });
+  await col.updateOne({ _id: new ObjectId(id) }, { $push: { friends: user._id } });
   return user;
 }
 
 async function removeFriend(id, friendId) {
   const col = await getCollection();
-  const user = await col.findOne({ _id: ObjectId(id) });
+  const user = await col.findOne({ _id: new ObjectId(id) });
 
-  if(!user.friends.includes(friendId)) {
-    throw new Error('Friend not found');
-  }
+  friendId = new ObjectId(friendId);
 
-  await col.updateOne({ _id: ObjectId(id) }, { $pull: { friends: friendId } });
+  await col.updateOne({ _id: new ObjectId(id) }, { $pull: { friends: friendId } });
   return user;
 }
 
@@ -171,7 +181,7 @@ async function removeFriend(id, friendId) {
  */
 async function remove(id) {
   const col = await getCollection();
-  await col.deleteOne({ _id: ObjectId(id) });
+  await col.deleteOne({ _id: new ObjectId(id) });
 }
 
 function generateJWT(user) {

@@ -15,7 +15,7 @@ export default defineComponent({
   data() {
     return {
       showModal: ref(false),
-      user: this.newGoal.owner,
+      user: this.newGoal.user_id,
       name: this.newGoal.name,
       selectedTime: getTimeFromCron(this.newGoal.repetition),
       selectedOccurrence: getOccurrenceFromCron(this.newGoal.repetition),

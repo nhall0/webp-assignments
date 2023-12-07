@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { getSession } from '@/model/session';
-import { getPostsByUsers } from '@/model/posts';
+import { getPostsByUsers} from '@/model/posts';
 import { getGoalsByUser } from '@/model/goals';
+import { changePassword } from '@/model/users';
 
 const user = getSession().user;
 if (!user) {
@@ -27,9 +28,14 @@ const passwords = ref({
 
 const fetchWorkoutStatistics = async () => {
   try {
-    const posts = await getPostsByUsers([user.id]);
-    const goals = await getGoalsByUser(user.id);
+    const posts = await getPostsByUsers([user._id]);
+    const goals = await getGoalsByUser(user._id);
     workoutStatistics.value.total = posts.length;
+
+    if (posts.length === 0) {
+      return;
+    }
+
     workoutStatistics.value.lastWorkoutDate = posts[0].date;
     workoutStatistics.value.goalCount = goals.length;
   } catch (error) {
@@ -37,10 +43,17 @@ const fetchWorkoutStatistics = async () => {
   }
 };
 
-const changePassword = async () => {
-  console.log('Changing password');
+const changePasswordWrapper = async () => {
+  try {
+    await changePassword(user, passwords.value.new);
+    passwords.value.current = '';
+    passwords.value.new = '';
+    alert('Password changed successfully');
+  } catch (error) {
+    console.error('Error changing password:', error);
+    alert('Error changing password');
+  }
 };
-
 
 fetchWorkoutStatistics();
 
@@ -63,7 +76,7 @@ fetchWorkoutStatistics();
 
         <div class="box profile-box">
           <h2 class="subtitle">Change Password</h2>
-          <form @submit.prevent="changePassword">
+          <form @submit.prevent="changePasswordWrapper">
             <div class="field">
               <label class="label">Current Password</label>
               <div class="control has-icons-left">

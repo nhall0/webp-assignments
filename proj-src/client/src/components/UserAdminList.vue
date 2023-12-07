@@ -1,21 +1,34 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-import { getUsers, type User } from '@/model/users';
+import { getUsers, type User , deleteUser} from '@/model/users';
 
 export default defineComponent({
   setup() {
-    const users = ref([] as User[]);
+    const users = ref<User[]>([]);
+
     const fetchUsers = async () => {
       try {
-        users.value = await getUsers();
+        const fetchedUsers = await getUsers();
+        users.value = fetchedUsers; 
+        console.log(users.value)
       } catch (error) {
         console.error('Error fetching users:', error);
       }
     };
 
-    onMounted(fetchUsers);
-    return { users };
-  }
+    const removeUser = async (user: string) => {
+      try {
+        await deleteUser(user);
+        fetchUsers();
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
+    };
+
+    onMounted(fetchUsers); 
+
+    return { users, removeUser };
+  },
 });
 </script>
 
@@ -40,7 +53,7 @@ export default defineComponent({
         <td v-if="user.role == 1">Admin</td>
         <td v-if="user.role == 0">User</td>
         <td><button class="button is-small">Edit</button></td>
-        <td><button class="button is-small">Delete</button></td>
+        <td><button class="button is-small" @click="removeUser(user._id)">Delete</button></td>
         </tr>
     </tbody>
     </table>

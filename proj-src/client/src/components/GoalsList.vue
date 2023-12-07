@@ -1,15 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { getNextDateFromCron, removeGoal, type Goal } from '@/model/goals';
-import { getWorkoutById } from '@/model/workouts';
+import { getNextDateFromCron, type Goal } from '@/model/goals';
 import EditGoalCron from './EditGoalCron.vue';
-
 import Privacy from './Privacy.vue';
 
 export default defineComponent({
   props: {
     userGoals: {
-      type: Array as () => Array<Goal>,
+      type: Array as () => Goal[],
       required: true,
     },
   },
@@ -17,37 +15,42 @@ export default defineComponent({
     Privacy,
     EditGoalCron
   },
-  methods: {
-    removeGoal(goalId: string) {
-      this.$emit('removed', goalId);
-    },
-    updateGoal(goal: Goal) {
-      this.$emit('updated', goal);
-    },
-    async getWorkoutName(workoutId: string) {
-      const workout = await getWorkoutById(workoutId);
-      return workout?.name;
-    },
-    getNextDateFromCron(cron: string) {
+  setup(props, { emit }) {
+    const removeGoalById = (goalId: string) => {
+      emit('removed', goalId);
+    };
+
+    const updateGoal = (goal: Goal) => {
+      emit('updated', goal);
+    };
+
+    const retrieveNextDateFromCron = (cron: string) => {
       return getNextDateFromCron(cron);
-    }
+    };
+
+    return {
+      removeGoalById,
+      updateGoal,
+      retrieveNextDateFromCron
+    };
   },
 });
 </script>
 
+
 <template>
   <div>
     <ul class="goal-list">
-      <li v-for="goal in userGoals" :key="goal.id" class="goal-item box">
+      <li v-for="goal in userGoals" :key="goal._id" class="goal-item box">
         <div class="goal-info">
           <h3 class="goal-name is-size-4">{{ goal.name }}</h3>
-          <p class="goal-detail"><strong>Next Date:</strong> {{ getNextDateFromCron(goal.repetition) }}</p>
-          <p class="goal-detail"><strong>Workout:</strong> {{ getWorkoutName(goal.workout) }}</p>
+          <p class="goal-detail"><strong>Next Date:</strong> {{ retrieveNextDateFromCron(goal.repetition) }}</p>
+          <p class="goal-detail"><strong>Workout:</strong> {{ goal.workout }}</p>
           <p class="goal-detail">
             <Privacy :privacy="goal.privacy" />
           </p>
           <p class="goal-detail">
-            <button class="button is-warning" @click="removeGoal(goal.id)">Remove</button>
+            <button class="button is-warning" @click="removeGoalById(goal._id)">Remove</button>
           </p>
           <p class="goal-detail">
             <EditGoalCron :new-goal="goal" @updated="updateGoal"/>

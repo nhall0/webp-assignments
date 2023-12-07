@@ -40,14 +40,14 @@ router.get('/', (req, res, next) => {
     }
 )
 .patch('/:id', (req, res, next) => {
-        update(+req.params.id, req.body).then((goal) => {
+        update(req.params.id, req.body).then((goal) => {
             res.send(goal);
         }
         ).catch(next)
     }
 )
 .delete('/:id', (req, res, next) => {
-        remove(+req.params.id).then((goal) => {
+        remove(req.params.id).then((goal) => {
             res.send(goal);
         }
         ).catch(next)

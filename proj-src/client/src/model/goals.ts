@@ -3,41 +3,40 @@ import * as cronParser from 'cron-parser';
 import {api} from "./session";
 
 export interface Goal {
-  id: string;
-  owner: string;
+  _id: string;
   name: string;
   privacy: number;
   repetition: string;
   workout: string;
+  user_id: string;
 }
 
-export function postNewGoal(goal: Goal) {
-  api("goals", {
-    method: "POST",
-    body: JSON.stringify(goal)
-  });
+export async function postNewGoal(goal: Goal) {
+  await api("goals", goal   , "POST");
 }
 
-export function removeGoal(id: string) {
-  api("goals/" + id, {
-    method: "DELETE"
-  });
+export async function updateGoal(goal: Goal) {
+  await api("goals/" + goal._id, goal, "PATCH");
 }
 
-export function getGoalById(id: string) {
-  return api("goals/" + id);
+export async function removeGoal(id: string) {
+  await api("goals/" + id, null, "DELETE");
 }
 
-export function getGoalByIds(ids: string[]) {
-  return api("goals/ids/" + ids);
+export async function getGoalById(id: string) {
+  return await api("goals/" + id);
 }
 
-export function getGoalsByUser(user: string) {
-  return api("goals/user/" + user);
+export async function getGoalByIds(ids: string[]) {
+  return await api("goals/ids/" + ids);
 }
 
-export function getGoals() {
-  return api("goals");
+export async function getGoalsByUser(user: string) {
+  return await api("goals/user/" + user);
+}
+
+export async function getGoals() {
+  return await api("goals");
 }
 
 export function getMonthsDatesFromCron(cron: string, month: number) {

@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { getFriendsByUser, type User } from '@/model/users';
+import { ref, watch} from 'vue';
+import { getFriendsByUser, type User, removeFriend } from '@/model/users';
 
-var friends: User[] = [];
+let friends = ref<User[]>([]);
 
-async function removeFriend(friend: User) {
+async function removeFriendWrapper(friend: string) {
   await removeFriend(friend);
   loadFriends()
 }
 
 async function loadFriends() {
-  friends = await getFriendsByUser();
+  friends.value = await getFriendsByUser();
 }
+
+watch(() => friends, () => {
+  console.log(friends.value)
+})
 
 loadFriends();
 
@@ -23,13 +28,13 @@ loadFriends();
         <div class="box friends-box">
           <h2 class="subtitle">Friends List</h2>
           <ul>
-            <li v-for="friend in friends" :key="friend.id">
+            <li v-for="friend in friends" :key="friend._id">
               <div class="friend-card">
                 <p><strong>Username:</strong> {{ friend.username }}</p>
                 <p><strong>Email:</strong> {{ friend.email }}</p>
                 <p><strong>First Name:</strong> {{ friend.firstName }}</p>
                 <p><strong>Last Name:</strong> {{ friend.lastName }}</p>
-                <button @click="removeFriend(friend)">Remove Friend</button>
+                <button @click="removeFriendWrapper(friend._id)">Remove Friend</button>
               </div>
             </li>
           </ul>

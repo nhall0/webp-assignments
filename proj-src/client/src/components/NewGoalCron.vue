@@ -1,28 +1,10 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { type Goal } from '@/model/goals';
-import { getWorkoutById } from '@/model/workouts';
 import PrivacyForm from './PrivacyForm.vue';
 import WorkoutListSimple from './WorkoutListSimple.vue';
 
 export default defineComponent({
-  data() {
-    return {
-      showModal: ref(false),
-      newGoal: ref<Goal>({
-        name: '',
-        owner: '',
-        privacy: 0,
-        repetition: '',
-        workout: '',
-        id: ''
-      }),
-      selectedTime: '',
-      selectedOccurrence: 'daily',
-      selectedWeekdays: [],
-      daysOfWeek: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
-    };
-  },
   props: {
     user: {
       type: String,
@@ -33,38 +15,69 @@ export default defineComponent({
     PrivacyForm,
     WorkoutListSimple
   },
-  methods: {
-    selectWorkout(workoutId: string) {
-      this.newGoal.workout = workoutId;
-      return getWorkoutById(workoutId);
-    },
-    showFunctionModal() {
-      this.showModal = true;
-    },
-    closeFunctionModal() {
-      this.showModal = false;
-    },
-    makeNewGoal() {
-      var hour = this.selectedTime.split(':')[0];
-      if(this.selectedOccurrence === 'daily') {
-        this.newGoal.repetition = `0 ${hour} * * *`;
+  setup(props, {emit}) {
+    const showModal = ref(false);
+    const newGoal = ref<Goal>({
+      name: '',
+      privacy: 0,
+      repetition: '',
+      workout: '',
+      _id: '',
+      user_id: ''
+    });
+    const selectedTime = ref('');
+    const selectedOccurrence = ref('daily');
+    const selectedWeekdays = ref<string[]>([]);
+    const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+    const selectWorkout = (workoutId: string) => {
+      newGoal.value.workout = workoutId;
+    };
+
+    const showFunctionModal = () => {
+      showModal.value = true;
+    };
+
+    const closeFunctionModal = () => {
+      showModal.value = false;
+    };
+
+    const makeNewGoal = () => {
+      const hour = selectedTime.value.split(':')[0];
+      if (selectedOccurrence.value === 'daily') {
+        newGoal.value.repetition = `0 ${hour} * * *`;
+      } else if (selectedOccurrence.value === 'weekly') {
+        newGoal.value.repetition = `0 ${hour} * * ${selectedWeekdays.value.join(',')}`;
       }
-      else if(this.selectedOccurrence === 'weekly'){
-        this.newGoal.repetition = `0 ${hour} * * ${this.selectedWeekdays.join(',')}`;
-      }
-      this.$emit('added', this.newGoal)
-      this.closeFunctionModal();
-    },
-    updatePrivacy(privacy: number) {
-      this.newGoal.privacy = privacy;
+      emit('added', newGoal.value);
+      closeFunctionModal();
+    };
+
+    const updatePrivacy = (privacy: number) => {
+      newGoal.value.privacy = privacy;
       return privacy;
-    }
+    };
+
+    return {
+      showModal,
+      newGoal,
+      selectedTime,
+      selectedOccurrence,
+      selectedWeekdays,
+      daysOfWeek,
+      selectWorkout,
+      showFunctionModal,
+      closeFunctionModal,
+      makeNewGoal,
+      updatePrivacy
+    };
   }
 });
 </script>
 
 <template>
   <div>
+
     <button @click="showFunctionModal" class="create-button button">Create New Goal</button>
     <div v-if="showModal" class="modal is-active">
       <div class="modal-background"></div>

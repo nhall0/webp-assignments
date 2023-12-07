@@ -1,106 +1,87 @@
-<script lang="ts">
-import { defineComponent, ref} from 'vue';
-
-import { getMonthsDatesFromCron, type Goal} from '@/model/goals';
-import { type Post } from '@/model/posts';
-import { getSession } from '@/model/session';
-import { getPostsByDate } from '@/model/posts';
-import { getWorkoutById } from '@/model/workouts';
+<script setup lang="ts">
+import { onMounted, ref, watch} from 'vue';
+import { getMonthsDatesFromCron, type Goal } from '@/model/goals';
+import { getWorkouts } from '@/model/workouts';
 
 interface CalendarDay {
     date: Date;
     label: string;
     goals: string[];
-    posts: string[];
 }
 
-const getGoalBackgroundClass = (goal: string, posts: string[]) => {
-    if (posts.includes(goal)) {
-        return 'rounded-box green-bg';
-    } else {
-        return 'rounded-box red-bg';
+const props = defineProps({
+    userGoals: {
+        type: Array as () => Array<Goal>,
+        required: true,
+    },
+});
+
+const currentMonth = ref(new Date());
+const calendarDays = ref<CalendarDay[]>([]);
+
+const previousMonth = () => {
+    currentMonth.value.setMonth(currentMonth.value.getMonth() - 1);
+    calculateCalendarDays();
+};
+
+const nextMonth = () => {
+    currentMonth.value.setMonth(currentMonth.value.getMonth() + 1);
+    calculateCalendarDays();
+};
+
+const workouts = ref<Record<string, string>>({});
+
+const fetchWorkouts = async () => {
+    const userWorkouts = await getWorkouts();
+    for (const workout of userWorkouts) {
+        workouts.value[workout._id] = workout.name;
     }
 };
 
-export default defineComponent({
-    props: {
-        userGoals: {
-            type: Array as () => Array<Goal>,
-            required: true,
-        },
-    },
-    data(props) {
-        const session = getSession().user;
+const calculateCalendarDays = async () => {
+    await fetchWorkouts();
 
-        if (!session) {
-            throw new Error('Session not found');
-        }
+    const monthDates: Record<string, string[]> = {};
 
-        const currentMonth = ref(new Date());
-        const calendarDays = ref<CalendarDay[]>([]);
-
-        const previousMonth = () => {
-            currentMonth.value.setMonth(currentMonth.value.getMonth() - 1);
-            calculateCalendarDays();
-        };
-
-        const nextMonth = () => {
-            currentMonth.value.setMonth(currentMonth.value.getMonth() + 1);
-            calculateCalendarDays();
-        };
-
-        async function calculateCalendarDays(): Promise<void> {
-            const monthDates: Record<string, string[]> = {};
-
-            // Collect dates and goals
-            for (let goal of props.userGoals) {
-                const dates = getMonthsDatesFromCron(goal.repetition, currentMonth.value.getMonth());
-                for (let date of dates) {
-                    if (!monthDates[date]) {
-                        monthDates[date] = [];
-                    }
-                    monthDates[date].push(goal.workout); 
-                }
+    for (let goal of props.userGoals) {
+        const dates = getMonthsDatesFromCron(goal.repetition, currentMonth.value.getMonth());
+        for (let date of dates) {
+            if (!monthDates[date]) {
+                monthDates[date] = [];
             }
-
-            const daysInMonth: CalendarDay[] = [];
-            const currentYear = currentMonth.value.getFullYear();
-            const currentMonthValue = currentMonth.value.getMonth();
-            const firstDay = new Date(currentYear, currentMonthValue, 1);
-            const lastDay = new Date(currentYear, currentMonthValue + 1, 0);
-
-            for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
-                const workoutIds = monthDates[date.toLocaleDateString()] || [];
-                const workoutNames = await Promise.all(workoutIds.map(async (id) => {
-                    const workout = await getWorkoutById(id);
-                    return workout ? workout.name : 'Workout not found';
-                }));
-
-                const posts = await getPostsByDate(date.toLocaleDateString());
-                const postWorkoutNames = await Promise.all(posts.map(async (post: Post) => {
-                    const workout = await getWorkoutById(post.workout);
-                    return workout ? workout.name : 'Workout not found';
-                }));
-
-                daysInMonth.push({
-                    date: new Date(date),
-                    label: date.getDate().toString(),
-                    goals: workoutNames,
-                    posts: postWorkoutNames,
-                });
-            }
+            monthDates[date].push(goal.workout);
         }
+    }
 
-        calculateCalendarDays();
+    const daysInMonth: CalendarDay[] = [];
+    const currentYear = currentMonth.value.getFullYear();
+    const currentMonthValue = currentMonth.value.getMonth();
+    const firstDay = new Date(currentYear, currentMonthValue, 1);
+    const lastDay = new Date(currentYear, currentMonthValue + 1, 0);
 
-        return {
-            currentMonth,
-            calendarDays,
-            previousMonth,
-            nextMonth,
-            getGoalBackgroundClass
-        };
-    },
+    for (let date = new Date(firstDay); date <= lastDay; date.setDate(date.getDate() + 1)) {
+        const workoutIds = monthDates[date.toLocaleDateString()] || [];
+        const workoutNames = workoutIds.map(id => workouts.value[id]).filter(Boolean);
+    
+
+        if (workoutNames.length > 0) {
+            daysInMonth.push({
+                date: new Date(date),
+                label: date.getDate().toString(),
+                goals: workoutNames
+            });
+        }
+    }
+
+    calendarDays.value = daysInMonth;
+};
+
+onMounted(() => {
+    calculateCalendarDays();
+});
+
+watch(() => props, () => {
+    calculateCalendarDays();
 });
 </script>
 
@@ -115,8 +96,10 @@ export default defineComponent({
             <div class="calendar-day" v-for="day in calendarDays" :key="day.label">
                 <div class="day-label">{{ day.label }}</div>
                 <div class="day-content">
-                    <div v-for="goal in day.goals" :key="goal" :class="getGoalBackgroundClass(goal, day.posts)">
-                        {{ goal }}
+                    <div class="goals">
+                        <div v-for="goal in day.goals" :key="goal" class="rounded-box">
+                            {{ goal }}
+                        </div>
                     </div>
                 </div>
             </div>

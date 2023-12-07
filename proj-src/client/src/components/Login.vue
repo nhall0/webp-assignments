@@ -14,6 +14,8 @@ export default {
     const signupName = ref('');
     const signupEmail = ref('');
     const signupPassword = ref('');
+    const firstName = ref('');
+    const lastName = ref('');
 
     const changeTab = (tab: string) => {
       activeTab.value = tab;
@@ -34,6 +36,8 @@ export default {
       signupName,
       signupEmail,
       signupPassword,
+      firstName,
+      lastName,
       changeTab,
       doLogin,
       doLogout,
@@ -86,7 +90,7 @@ export default {
             <h1 class="title has-text-centered">Sign Up</h1>
             <form>
               <div class="field">
-                <label class="label">Name</label>
+                <label class="label">Username</label>
                 <div class="control">
                   <input class="input" type="text" placeholder="Enter your name" v-model="signupName">
                 </div>
@@ -104,8 +108,20 @@ export default {
                 </div>
               </div>
               <div class="field">
+                <label class="label">First Name</label>
                 <div class="control">
-                  <button class="button is-success is-fullwidth" @click.prevent="makeUser(signupName, signupEmail, signupPassword)">Sign Up</button>
+                  <input class="input" type="password" placeholder="Enter your first name." v-model="firstName">
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Last Name</label>
+                <div class="control">
+                  <input class="input" type="password" placeholder="Enter your last name." v-model="lastName">
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <button class="button is-success is-fullwidth" @click.prevent="makeUser(signupName, signupEmail, signupPassword, firstName, lastName)">Sign Up</button>
                 </div>
               </div>
             </form>

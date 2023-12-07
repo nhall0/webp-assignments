@@ -32,12 +32,12 @@ async function getAll() {
 
 async function get(id) {
   const col = await getCollection();
-  return col.findOne({ _id: ObjectId(id) });
+  return col.findOne({ _id: new ObjectId(id) });
 }
 
 async function getByIds(ids) {
   const col = await getCollection();
-  return col.find({ _id: { $in: ids.map(id => ObjectId(id)) } }).toArray();
+  return col.find({ _id: { $in: ids.map(id => new ObjectId(id)) } }).toArray();
 }
 
 async function getByUserId(userId) {
@@ -47,17 +47,18 @@ async function getByUserId(userId) {
 
 async function add(goal) {
   const col = await getCollection();
+  delete goal._id;
   return col.insertOne(goal);
 }
 
 async function update(id, goal) {
   const col = await getCollection();
-  return col.updateOne({ _id: ObjectId(id) }, { $set: goal });
+  return col.updateOne({ _id: new ObjectId(id) }, { $set: goal });
 }
 
 async function remove(id) {
   const col = await getCollection();
-  return col.deleteOne({ _id: ObjectId(id) });
+  return col.deleteOne({ _id: new ObjectId(id) });
 }
 
 module.exports = {

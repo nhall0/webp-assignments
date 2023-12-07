@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch} from 'vue';
 import { getSession } from '@/model/session';
+import GoalsList from '@/components/GoalsList.vue';
+import NewGoalCron from '@/components/NewGoalCron.vue';
+import GoalCalendar from '@/components/GoalCalendar.vue';
+import { getWorkoutById } from '@/model/workouts';
 import {
   postNewGoal,
+  updateGoal,
   removeGoal,
   getGoalsByUser,
   type Goal,
@@ -19,8 +24,14 @@ const goals = ref<Goal[]>([]);
 
 const fetchGoals = async () => {
   try {
-    const fetchedGoals = await getGoalsByUser(user.id);
+    const fetchedGoals = await getGoalsByUser(user._id);
     goals.value = fetchedGoals;
+
+    goals.value.forEach(async (goal) => {
+      const workout = await getWorkoutById(goal.workout);
+      goal.workout = workout.name;
+    });
+
   } catch (error) {
     console.error('Error fetching goals:', error);
   }
@@ -28,14 +39,16 @@ const fetchGoals = async () => {
 
 const addGoal = (newGoal: Goal) => {
   postNewGoal(newGoal);
+  fetchGoals();
 };
 
 const removeLocalGoal = (goalId: string) => {
   removeGoal(goalId);
+  fetchGoals();
 };
 
 const updateLocalGoal = (updatedGoal: Goal) => {
-  postNewGoal(updatedGoal);
+  updateGoal(updatedGoal);
   fetchGoals();
 };
 
@@ -53,7 +66,7 @@ fetchGoals();
     
     <div class="side-content" style="z-index: 100;">
       <div class="field">
-        <NewGoalCron :user="user.id" @added="addGoal"></NewGoalCron>
+        <NewGoalCron :user="user._id" @added="addGoal"></NewGoalCron>
       </div>
 
       <div class="field">
