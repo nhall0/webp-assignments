@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
 import { type Workout } from '@/model/workouts';
-import { type Exercise, getExerciseIndexByName, getExercises, getAllExercises } from '@/model/exercises';
+import { type Exercise, getExerciseIndexByName, getAllExercises } from '@/model/exercises';
 import PrivacyForm from './PrivacyForm.vue';
 import ExerciseList from './ExerciseList.vue';
 
@@ -13,6 +13,7 @@ export default defineComponent({
   setup(props, context) {
     const showModal = ref(false);
     const otherExercises = ref<number[]>([]);
+    const exercises = ref<number[]>([]);
     const newWorkout = ref<Workout>({
       name: '',
       sets: 0,
@@ -40,9 +41,10 @@ export default defineComponent({
     };
 
     const addExercise = async (exercise: Exercise) => {
-      const exerciseIndex = await getExerciseIndexByName(exercise.name);
-      newWorkout.value.exercises.push(exerciseIndex.id);
-      fillOtherExercises();
+      await getExerciseIndexByName(exercise.name).then((res) => {
+          exercises.value.push(res.id);
+          fillOtherExercises();
+      });
     };
 
     watch(newWorkout, () => {
@@ -50,26 +52,28 @@ export default defineComponent({
     });
 
     const removeExercise = async (exercise: Exercise) => {
-      const exerciseIndex = await getExerciseIndexByName(exercise.name);
-      const index = newWorkout.value.exercises.indexOf(exerciseIndex.id);
-      if (index > -1) {
-        newWorkout.value.exercises.splice(index, 1);
-      }
-      fillOtherExercises();
+      await getExerciseIndexByName(exercise.name).then((res) => {
+        const index = exercises.value.indexOf(res.id);
+        if (index > -1) {
+          exercises.value.splice(index, 1);
+        }
+        fillOtherExercises();
+      });
     };
 
     const fillOtherExercises = async () => {
-      const exercises = await getAllExercises();
-      const otherExercisesList = [];
+      await getAllExercises().then((res) => {
+        const otherExercisesList = [];
 
-      for (let i = 0; i < exercises.length; i++) {
-        if (!newWorkout.value.exercises.includes(exercises[i].id)) {
-          otherExercisesList.push(exercises[i].id);
+        for (let i = 0; i < res.length; i++) {
+          if (!exercises.value.includes(res[i].id)) {
+            otherExercisesList.push(res[i].id);
+          }
         }
-      }
 
-      otherExercises.value = otherExercisesList;
-
+        otherExercises.value = otherExercisesList;
+        newWorkout.value.exercises = exercises.value;
+      });
     };
 
     fillOtherExercises();
@@ -78,6 +82,7 @@ export default defineComponent({
       showModal,
       newWorkout,
       otherExercises,
+      exercises,
       openModal,
       closeModal,
       addWorkout,
@@ -125,7 +130,7 @@ export default defineComponent({
             </div>
             <div class="column">
               <p class="has-text-weight-bold">Workout Exercises</p>
-              <ExerciseList :exerciseSubList="newWorkout.exercises" @call:back="removeExercise" />
+              <ExerciseList :exerciseSubList="exercises" @call:back="removeExercise" />
             </div>
           </div>
           <p class="has-text-weight-bold has-text-centered">Visibility</p>

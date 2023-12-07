@@ -32,16 +32,16 @@ const nextMonth = () => {
 const workouts = ref<Record<string, string>>({});
 
 const fetchWorkouts = async () => {
-    const userWorkouts = await getWorkouts();
-    for (const workout of userWorkouts) {
+    await getWorkouts().then((res) => {
+        for (const workout of res) {
         workouts.value[workout._id] = workout.name;
     }
+    });
 };
 
 const calculateCalendarDays = async () => {
-    await fetchWorkouts();
-
-    const monthDates: Record<string, string[]> = {};
+    await fetchWorkouts().then(() => {
+        const monthDates: Record<string, string[]> = {};
 
     for (let goal of props.userGoals) {
         const dates = getMonthsDatesFromCron(goal.repetition, currentMonth.value.getMonth());
@@ -74,13 +74,14 @@ const calculateCalendarDays = async () => {
     }
 
     calendarDays.value = daysInMonth;
+    });
 };
 
 onMounted(() => {
     calculateCalendarDays();
 });
 
-watch(() => props, () => {
+watch(() => props.userGoals, () => {
     calculateCalendarDays();
 });
 </script>

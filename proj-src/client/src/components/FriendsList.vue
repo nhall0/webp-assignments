@@ -10,7 +10,11 @@ async function removeFriendWrapper(friend: string) {
 }
 
 async function loadFriends() {
-  friends.value = await getFriendsByUser();
+  await getFriendsByUser().then((res) => {
+    if (res) {
+      friends.value = res;
+    }
+  });
 }
 
 watch(() => friends, () => {
@@ -30,12 +34,12 @@ loadFriends();
           <ul>
             <li v-for="friend in friends" :key="friend._id">
               <div class="friend-card">
-                <p><strong>Username:</strong> {{ friend.username }}</p>
-                <p><strong>Email:</strong> {{ friend.email }}</p>
-                <p><strong>First Name:</strong> {{ friend.firstName }}</p>
-                <p><strong>Last Name:</strong> {{ friend.lastName }}</p>
-                <button @click="removeFriendWrapper(friend._id)">Remove Friend</button>
-              </div>
+              <p><strong>Username:</strong> {{ friend.username }}</p>
+              <p><strong>Email:</strong> {{ friend.email }}</p>
+              <p><strong>First Name:</strong> {{ friend.firstName }}</p>
+              <p><strong>Last Name:</strong> {{ friend.lastName }}</p>
+              <button @click="removeFriendWrapper(friend._id)">Remove Friend</button>
+            </div>
             </li>
           </ul>
         </div>

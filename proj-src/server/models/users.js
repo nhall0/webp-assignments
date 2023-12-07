@@ -44,7 +44,12 @@ async function getByIds(ids) {
   const user = await col.findOne({ _id: new ObjectId(ids) });
   for (let i = 0; i < user.friends.length; i++) {
     user.friends[i] = await col.findOne({ _id: new ObjectId(user.friends[i]) });
-    user.friends[i].password = undefined;
+    if(user.friends[i]) {
+      user.friends[i].password = undefined;
+    }
+    if(user.friends[i]) {
+      user.friends[i].friends = undefined;
+    }
   }
   return user.friends;
 }

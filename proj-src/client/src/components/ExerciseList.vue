@@ -1,37 +1,29 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 import { type Exercise, getExercises } from '@/model/exercises';
 
-export default defineComponent({
-  props: {
-    exerciseSubList: {
-      type: Array as () => number[],
-      required: true,
-    }
-  },
-  methods: {
-    sendCallBack(exercise: Exercise) {
-      this.$emit('call:back', exercise);
-    },
-    async fetchExercises(exerciseSubList: number[]) {
-      const response = await getExercises(exerciseSubList);
-      this.exerciseSubListOutput = response;
-    }
-  },
-  data() {
-    return {
-      exerciseSubListOutput: [] as Exercise[],
-    }
-  },
-  watch: {
-    exerciseSubList: {
-      immediate: true,
-      handler(exerciseSubList: number[]) {
-        this.fetchExercises(exerciseSubList);
-      }
-    }
+
+const emit = defineEmits(['call:back']);
+const exerciseSubList = defineProps<{ exerciseSubList: number[] }>();
+const exerciseSubListOutput = ref<Exercise[]>([]);
+
+const fetchExercises = async (exerciseSubList: number[]) => {
+  try {
+    const response = await getExercises(exerciseSubList);
+    exerciseSubListOutput.value = response;
+  } catch (error) {
+    console.error('Error fetching exercises:', error);
   }
-});
+};
+
+const sendCallBack = (exercise: Exercise) => {
+      emit('call:back', exercise);
+};
+
+watch(exerciseSubList, (newValue) => {
+  fetchExercises(newValue.exerciseSubList);
+}, { immediate: true });
+
 </script>
 
 <template>

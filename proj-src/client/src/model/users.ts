@@ -28,7 +28,13 @@ export async function getUserById(id: string) {
 }
 
 export async function getFriendsByUser() {
-    return await api("users/friends");
+    const friends = await api("users/friends")
+    for (let i = 0; i < friends.length; i++) {
+        if(friends[i] == null) {
+            friends.splice(i, 1);
+        }
+    }
+    return friends;
 }
 
 export async function addFriend(friend: string) {
