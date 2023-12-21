@@ -35,8 +35,10 @@ async function get(id) {
 }
 
 async function search(query) {
+  //EVERY USER WHOS USERNAME STARTS WITH THE QUERY
   const col = await getCollection();
-  return col.find({ $text: { $search: query } }).toArray();
+  const users = await col.find({ username: { $regex: `^${query}`, $options: 'i' } }).toArray();
+  return users;
 }
 
 async function getByIds(ids) {

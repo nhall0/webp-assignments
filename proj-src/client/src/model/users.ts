@@ -67,3 +67,8 @@ export async function makeUser(username: string, email: string, password: string
 export async function getUsers() {
     return await api("users");
   }
+
+export async function getUsersByFirstLetters(letters: string) : Promise<User[]> {
+    if(letters == null || letters == "") return []
+    return await api("users/search/" + letters);
+}

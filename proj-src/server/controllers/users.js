@@ -13,9 +13,10 @@ router.get('/', requireUser(true), (req, res, next) => {
         res.send(user);
     }
 })
-.get('/search', requireUser() , (req, res, next) => {
-    const results = search(req.query.q);
-    res.send(results);
+.get('/search/:id', (req, res, next) => {
+    search(req.params.id).then(users => {
+        res.send(users);
+    }).catch(next);
 })
 .get('/friends', requireUser(), (req, res, next) => {
     const user = req.user;

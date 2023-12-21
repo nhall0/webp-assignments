@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { ref, watch} from 'vue';
+import { defineProps,type PropType } from 'vue';
 import { getFriendsByUser, type User, removeFriend } from '@/model/users';
 
-let friends = ref<User[]>([]);
+
+let props = defineProps({
+  friends: {
+    type: Array as unknown as PropType<User[]>,
+    required: true
+  }
+})
+
+let friends = ref<User[]>(props.friends);
 
 async function removeFriendWrapper(friend: string) {
   await removeFriend(friend);
@@ -17,8 +26,8 @@ async function loadFriends() {
   });
 }
 
-watch(() => friends, () => {
-  console.log(friends.value)
+watch(() => props.friends, () => {
+  friends.value = props.friends;
 })
 
 loadFriends();
